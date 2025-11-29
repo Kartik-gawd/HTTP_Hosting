@@ -86,9 +86,9 @@ ALLOWED_IPS = [
 
 ---
 
-## 🖥️ Usage
+## Usage
 
-### 🔼 File Upload
+### File Upload
 
 1. Click **Upload File**.
 2. A drag-and-drop zone appears.
@@ -97,7 +97,7 @@ ALLOWED_IPS = [
 
 ---
 
-### 📄 File Interaction
+### File Interaction
 
 When clicking a non-directory file:
 
@@ -107,7 +107,3 @@ When clicking a non-directory file:
 
 ---
 
-## 🤝 Contribution
-
-Feel free to fork the repository and submit pull requests.
-Contributions to UI/UX, security, and performance are welcome!
