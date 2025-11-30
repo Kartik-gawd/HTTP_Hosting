@@ -71,10 +71,13 @@ Open one of the URLs in your browser to access the file manager.
 
 ## Screenshots
 
+### Interface
 ![Interface](img/image1.png)
 
+### Preview
 ![Preview](img/image2.png)
 
+### Upload
 ![Upload](img/image3.png)
 
 ## Configuration
