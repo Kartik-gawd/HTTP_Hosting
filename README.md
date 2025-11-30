@@ -1,15 +1,22 @@
-# Local_Hosting
+# HTTP Hosting
+
 This script provides a local HTTP server built on Python's http.server module. It is designed for sharing files quickly and safely across a local network.
+
+### What it does:
+
+- Creates a small local website on your computer using Python. When you run it, your computer becomes a mini web server that lets you share files with anyone on the same **Wi-Fi or LAN network, not the internet.**
+- Allows **Downloading**, **Previewing** of files as well as **Uploading** files back to the server.
+- This makes it a quick and safe way to share files with multiple devices without needing email, USB drives, or cloud services.
 
 ---
 
-## Features
+## Features:
 
 * Clean, responsive, dark-themed interface.
-* Restricts access to a defined list of IP addresses.
-* Drag-and-drop or file selection uploads to the current directory.
-* Modal viewer for images, audio, and video.
-* Console QR code for quick mobile access.
+* **Restricts access** to a defined list of IP addresses.
+* **Preview** for images, audio, and video.
+* **Download and Upload** files easily.
+* Console **QR code** for quick mobile access.
 
 ---
 
@@ -17,8 +24,8 @@ This script provides a local HTTP server built on Python's http.server module. I
 
 ### 1. Prerequisites
 
-- Install Python 3.x.
-- Install the optional QR code dependency:
+- Python 3.x.
+- (Optional) Install **segno** (QR code dependency):
 
 ```bash
 pip install segno
@@ -61,6 +68,14 @@ Press Ctrl+C to stop the server
 Open one of the URLs in your browser to access the file manager.
 
 ---
+
+## Screenshots
+
+![Interface](img/image1.png)
+
+![Preview](img/image2.png)
+
+![Upload](img/image3.png)
 
 ## Configuration
 
