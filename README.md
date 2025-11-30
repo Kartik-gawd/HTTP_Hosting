@@ -7,9 +7,13 @@ This script provides a local HTTP server built on Python's http.server module. I
 - Creates a small local website on your computer using Python. When you run it, your computer becomes a mini web server that lets you share files with anyone on the same **Wi-Fi or LAN network, not the internet.**
 - Allows **Downloading**, **Previewing** of files as well as **Uploading** files back to the server.
 - This makes it a quick and safe way to share files with multiple devices without needing email, USB drives, or cloud services.
-
+  
 ---
 
+## ✅ Compatibility
+
+### **Works on:** **Windows, macOS, and Linux.**
+  
 ## Features:
 
 * Clean, responsive, dark-themed interface.
@@ -92,7 +96,7 @@ Modify the variables at the top of `localserver.py`:
 | `EXCLUDED_EXTENSIONS` | File types hidden or denied                    | `{'.lnk', '.ini', '.url', '.db', '.exe'}` |
 | `PREVIEWABLE_EXTS`    | Media types that can be previewed in the modal | Multiple                                  |
 
-### Example: Customizing `ALLOWED_IPS`
+ Example: Customizing `ALLOWED_IPS`
 
 ```python
 ALLOWED_IPS = [
@@ -104,24 +108,24 @@ ALLOWED_IPS = [
 
 ---
 
-## Usage
 
-### File Upload
+# ⚠️ SECURITY WARNING: DO NOT USE FOR PRODUCTION OR SENSITIVE DATA
+**IF port forwarding is enabled** for this port (port: 8000), it will make your local server **reachable** from the **public internet**. That means anyone outside your network could access it with your **public ip**, so it’s only meant for testing and debugging.
 
-1. Click **Upload File**.
-2. A drag-and-drop zone appears.
-3. Drag files or click to select.
-4. Click **Upload Files** to send them to the current directory.
+Anyone monitoring the network connection (e.g., MITM attackers, public Wi-Fi sniffers, or your ISP) can read and intercept all information.
+- Make sure port forwarding for the port the script is using (port 8000) is **turned OFF**.
+- NEVER run this server as the root or Administrator user.
 
----
+## On the positive side:
+Running a simple HTTP server strictly within your local network (LAN) **without port forwarding does not** expose it to the public internet. This means devices outside your home or office network cannot access it, and typical LAN isolation on home routers prevents external attacks. For local testing, this setup is generally safe as long as you trust the devices on your network and avoid handling sensitive data.
 
-### File Interaction
-
-When clicking a non-directory file:
-
-* **Preview in New Tab**
-* **Download**
-* **Embedded Player** for supported media (MP4, MP3, JPG, etc.)
 
 ---
 
+## ⚖️ License
+
+This project is licensed under the **MIT License** - see the **[LICENSE](LICENSE)** file for details.
+
+## Contributing
+
+Feel free to submit pull requests or raise issues on the GitHub repository!
