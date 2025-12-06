@@ -24,7 +24,20 @@ This script provides a local HTTP server built on Python's http.server module. I
 
 ---
 
-## How to Start
+## Download📥 (Windows-Only) (No Setup Required) 
+
+You can simply download the standalone application:
+
+1.  Go to the **[Releases Page](link-to-your-releases)**.
+2.  Download `launcher.exe`.
+3.  Double-click to run.
+
+**Note:** Because this app is not signed by Microsoft, Windows Defender might show a blue "Windows protected your PC" popup.
+* Click **"More Info"** -> **"Run Anyway"**.
+
+---
+
+## How to Setup
 
 ### 1. Requirements
 
@@ -42,7 +55,7 @@ pip install segno
 
 ### 2. Run the Server
 
-Copy the script into the folder you want to share, then run it using:
+Copy the scripts folder, then run `launcher.py` using:
 
 ```bash
 python launcher.py
@@ -112,7 +125,7 @@ You can modify config.py to change server behavior:
 ## Future enhancement
 
 - ### Use HTTPS
-- ### Media player using ffmpeg
+- ### Dedicated Media player using ffmpeg
 
 ---
 
