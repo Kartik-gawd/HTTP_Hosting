@@ -1,11 +1,9 @@
 # HTTP Hosting
 
 This script provides a local HTTP server built on Python's http.server module. It is designed for sharing files quickly and safely across a local network.
-
 ### What it does:
 
 - Creates a small local website on your computer using Python. When you run it, your computer becomes a mini web server that lets you share files with anyone on the same **Wi-Fi or LAN network, not the internet.**
-- Allows **Downloading**, **Previewing** of files as well as **Uploading** files back to the server.
 - This makes it a quick and safe way to share files with multiple devices without needing email, USB drives, or cloud services.
   
 ---
@@ -16,9 +14,11 @@ This script provides a local HTTP server built on Python's http.server module. I
   
 ## Features:
 
+* Simple popup to select the folder you want to share.
 * Clean, responsive, dark-themed interface.
 * **Restricts access** to a defined list of IP addresses.
 * **Preview** for images, audio, and video.
+* **External Subtitles** support.
 * **Download and Upload** files easily.
 * Console **QR code** for quick mobile access.
 
@@ -26,9 +26,10 @@ This script provides a local HTTP server built on Python's http.server module. I
 
 ## How to Start
 
-### 1. Prerequisites
+### 1. Requirements
 
 - Python 3.x.
+- **For Linux**, install **tkinter**. (Built-in for Windows and macOS)
 - (Optional) Install **segno** (QR code dependency):
 
 ```bash
@@ -44,9 +45,11 @@ pip install segno
 Copy the script into the folder you want to share, then run it using:
 
 ```bash
-python localserver.py
+python launcher.py
 ```
 or by running it through any IDE.
+
+A window will pop up. Select the folder you want to serve.
 
 ---
 
@@ -56,20 +59,33 @@ The console/terminal will show:
 
 ```
 ============================================================
---- Modern Secure Server Running ---
-Serving: .
+SERVER STARTING...
 Port: 8000
 Local URL: http://127.0.0.1:8000
 Network URL: http://192.168.1.10:8000
-Allowed IPs: ['127.0.0.1', '192.168.1.x']
 
-# ... QR Code Image will appear here (if segno is installed) ...
+# ... QR Code Image will appear here (if segno is installed)
 
 Press Ctrl+C to stop the server
 ============================================================
 ```
 
 Open one of the URLs in your browser to access the file manager.
+
+### 4. (Optional) Building a Standalone Executable (.exe)
+You can bundle this project into a single .exe file that works on computers without Python installed.
+
+Install PyInstaller:
+
+```bash
+pip install pyinstaller
+```
+Build the App: Run this specific command to ensure the GUI works and the console is handled correctly:
+
+```bash
+pyinstaller --noconsole --onefile launcher.py
+```
+Locate the Exe: Your new launcher.exe will be in the dist folder. You can move this file anywhere; it contains all necessary code and libraries.
 
 ---
 
@@ -84,30 +100,21 @@ Open one of the URLs in your browser to access the file manager.
 ### Upload
 ![Upload](img/image3.png)
 
-## Configuration
-
-Modify the variables at the top of `localserver.py`:
-
-| Variable              | Description                                    | Default                                   |
-| --------------------- | ---------------------------------------------- | ----------------------------------------- |
-| `PORT`                | Port the server listens on                     | `8000`                                    |
-| `FOLDER_TO_SERVE`     | Root directory to host                         | `.`                                       |
-| `ALLOWED_IPS`         | IPs allowed to connect; supports `.x` wildcard | `["127.0.0.1", "192.168.1.x"]`            |
-| `EXCLUDED_EXTENSIONS` | File types hidden or denied                    | `{'.lnk', '.ini', '.url', '.db', '.exe'}` |
-| `PREVIEWABLE_EXTS`    | Media types that can be previewed in the modal | Multiple                                  |
-
- Example: Customizing `ALLOWED_IPS`
-
-```python
-ALLOWED_IPS = [
-    "127.0.0.1",      # Local machine only
-    "192.168.1.x",    # All devices in the 192.168.1.x subnet
-    "10.0.0.50",      # Specific device
-]
-```
-
+## Configuration (config.py)
+You can modify config.py to change server behavior:
+- **PORT**: Change the default port (8000).
+- **ALLOWED_NETWORKS**: By default, it allows 127.0.0.1 (Localhost) and 192.168.1.0/24 (Standard Home WiFi).
+- **MAX_UPLOAD_MB**: Set the maximum file upload size (Default: 5GB).
+- **EXCLUDED_EXTENSIONS**: Hide specific file types from the web view.
+  
 ---
 
+## Future enhancement
+
+- ### Use HTTPS
+- ### Media player using ffmpeg
+
+---
 
 # ⚠️ SECURITY WARNING: DO NOT USE FOR PRODUCTION OR SENSITIVE DATA
 **IF port forwarding is enabled** for this port (port: 8000), it will make your local server **reachable** from the **public internet**. That means anyone outside your network could access it with your **public ip**, so it’s only meant for testing and debugging.
@@ -118,6 +125,7 @@ Anyone monitoring the network connection (e.g., MITM attackers, public Wi-Fi sni
 
 ## On the positive side:
 Running a simple HTTP server strictly within your local network (LAN) **without port forwarding does not** expose it to the public internet. This means devices outside your home or office network cannot access it, and typical LAN isolation on home routers prevents external attacks. For local testing, this setup is generally safe as long as you trust the devices on your network and avoid handling sensitive data.
+
 
 
 ---
