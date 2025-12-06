@@ -28,13 +28,10 @@ This script provides a local HTTP server built on Python's http.server module. I
 
 You can simply download the standalone application:
 
-1.  Go to the **[Releases Page](link-to-your-releases)**.
+1.  Go to the **[Releases Page](https://github.com/Kartik-gawd/HTTP_Hosting/releases/tag/v1.0)**.
 2.  Download `launcher.exe`.
 3.  Double-click to run.
-
-**Note:** Because this app is not signed by Microsoft, Windows Defender might show a blue "Windows protected your PC" popup.
-* Click **"More Info"** -> **"Run Anyway"**.
-
+   
 ---
 
 ## How to Setup
@@ -55,7 +52,7 @@ pip install segno
 
 ### 2. Run the Server
 
-Copy the scripts folder, then run `launcher.py` using:
+In the code folder, run `launcher.py` using:
 
 ```bash
 python launcher.py
@@ -84,21 +81,6 @@ Press Ctrl+C to stop the server
 ```
 
 Open one of the URLs in your browser to access the file manager.
-
-### 4. (Optional) Building a Standalone Executable (.exe)
-You can bundle this project into a single .exe file that works on computers without Python installed.
-
-Install PyInstaller:
-
-```bash
-pip install pyinstaller
-```
-Build the App: Run this specific command to ensure the GUI works and the console is handled correctly:
-
-```bash
-pyinstaller --noconsole --onefile launcher.py
-```
-Locate the Exe: Your new launcher.exe will be in the dist folder. You can move this file anywhere; it contains all necessary code and libraries.
 
 ---
 
