@@ -28,7 +28,7 @@ This script provides a local HTTP server built on Python's http.server module. I
 
 You can simply download the standalone application:
 
-1.  Go to the **[Releases Page](https://github.com/Kartik-gawd/HTTP_Hosting/releases/tag/v1.0)**.
+1.  Go to the **[Releases Page](https://github.com/Kartik-gawd/HTTP_Hosting/releases/tag/v1.1)**.
 2.  Download `launcher.exe`.
 3.  Double-click to run.
    
@@ -98,16 +98,17 @@ Open one of the URLs in your browser to access the file manager.
 ## Configuration (config.py)
 You can modify config.py to change server behavior:
 - **PORT**: Change the default port (8000).
-- **ALLOWED_NETWORKS**: By default, it allows 127.0.0.1 (Localhost) and 192.168.1.0/24 (Standard Home WiFi).
 - **MAX_UPLOAD_MB**: Set the maximum file upload size (Default: 5GB).
 - **EXCLUDED_EXTENSIONS**: Hide specific file types from the web view.
   
 ---
 
-## Future enhancement
+## Future enhancement (what it lacks)
 
-- ### Use HTTPS
-- ### Dedicated Media player using ffmpeg
+- ### Encryption (Use of HTTPS)
+- ### Embedded Audio-tracks and soft subtitles support (Requires a Media player using ffmpeg)
+- ### Folder download as zip
+- ### Clipboard feature
 
 ---
 
@@ -119,9 +120,8 @@ Anyone monitoring the network connection (e.g., MITM attackers, public Wi-Fi sni
 - NEVER run this server as the root or Administrator user.
 
 ## On the positive side:
-Running a simple HTTP server strictly within your local network (LAN) **without port forwarding does not** expose it to the public internet. This means devices outside your home or office network cannot access it, and typical LAN isolation on home routers prevents external attacks. For local testing, this setup is generally safe as long as you trust the devices on your network and avoid handling sensitive data.
 
-
+Home routers usually have **port forwarding off by default** for safety so the typical LAN isolation on home routers prevents external attacks. For local testing, this setup is generally safe as long as you trust the devices on your network and avoid handling sensitive data.
 
 ---
 
