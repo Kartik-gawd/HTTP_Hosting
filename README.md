@@ -19,7 +19,7 @@ This script provides a local HTTP server built on Python's http.server module. I
 * **Restricts access** to a defined list of IP addresses.
 * **Preview** for images, audio, and video.
 * **External Subtitles** support.
-* **Download and Upload** files easily.
+* **Download and Upload** files easily. 
 * Console **QR code** for quick mobile access.
 
 ---
@@ -98,8 +98,9 @@ Open one of the URLs in your browser to access the file manager.
 ## Configuration (config.py)
 You can modify config.py to change server behavior:
 - **PORT**: Change the default port (8000).
-- **MAX_UPLOAD_MB**: Set the maximum file upload size (Default: 5GB).
+- **MAX_UPLOAD_MB**: Set the maximum file upload size (Default: 5GB). Ensure theres enough space in host machine.
 - **EXCLUDED_EXTENSIONS**: Hide specific file types from the web view.
+- **IPs allow/block**: /Removed/
   
 ---
 
@@ -109,6 +110,7 @@ You can modify config.py to change server behavior:
 - ### Embedded Audio-tracks and soft subtitles support (Requires a Media player using ffmpeg)
 - ### Folder download as zip
 - ### Clipboard feature
+- ### RAM killing uploads on large files (fixed, yet to upload)
 
 ---
 
