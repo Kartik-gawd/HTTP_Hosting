@@ -14,9 +14,7 @@ This script provides a local HTTP server built on Python's http.server module. I
   
 ## Features:
 
-* Simple popup to select the folder you want to share.
-* Clean, responsive, dark-themed interface.
-* **Restricts access** to a defined list of IP addresses.
+* Share selected folder on a clean interface.
 * **Preview** for images, audio, and video.
 * **External Subtitles** support.
 * **Download and Upload** files easily. 
@@ -106,7 +104,7 @@ You can modify config.py to change server behavior:
 
 ## Future enhancement (what it lacks)
 
-- ### Encryption (Use of HTTPS)
+- ### HTTPS (Impossible, but session cookies can be implemented).
 - ### Embedded Audio-tracks and soft subtitles support (Requires a Media player using ffmpeg)
 - ### Folder download as zip
 - ### Clipboard feature
