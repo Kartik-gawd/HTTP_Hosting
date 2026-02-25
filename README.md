@@ -19,7 +19,9 @@ This script provides a local HTTP server built on Python's http.server module. I
 * **External Subtitles** support.
 * **Download and Upload** files easily. 
 * Console **QR code** for quick mobile access.
-
+* Entire folder can be downloaded as .zip.
+* Clipboard feature (more like a group chat).
+  
 ---
 
 ## Download📥 (Windows-Only) (No Setup Required) 
@@ -104,11 +106,8 @@ You can modify config.py to change server behavior:
 
 ## Future enhancement (what it lacks)
 
-- ### HTTPS (Impossible, but session cookies can be implemented).
+- ### HTTPS (not possible, but session cookies can be implemented).
 - ### Embedded Audio-tracks and soft subtitles support (Requires a Media player using ffmpeg)
-- ### Folder download as zip
-- ### Clipboard feature
-- ### RAM killing uploads on large files (fixed, yet to upload)
 
 ---
 
