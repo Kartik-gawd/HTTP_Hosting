@@ -20,7 +20,8 @@ This script provides a local HTTP server built on Python's http.server module. I
 * **Download and Upload** files easily. 
 * Console **QR code** for quick mobile access.
 * Entire folder can be downloaded as .zip.
-* Clipboard feature (more like a group chat).
+* Clipboard feature (also a group chat).
+* Session tokens.
   
 ---
 
@@ -106,21 +107,13 @@ You can modify config.py to change server behavior:
 
 ## Future enhancement (what it lacks)
 
-- ### HTTPS (not possible, but session cookies can be implemented).
 - ### Embedded Audio-tracks and soft subtitles support (Requires a Media player using ffmpeg)
 
 ---
 
-# ⚠️ SECURITY WARNING: DO NOT USE FOR PRODUCTION OR SENSITIVE DATA
-**IF port forwarding is enabled** for this port (port: 8000), it will make your local server **reachable** from the **public internet**. That means anyone outside your network could access it with your **public ip**, so it’s only meant for testing and debugging.
+## Note: 
 
-Anyone monitoring the network connection (e.g., MITM attackers, public Wi-Fi sniffers, or your ISP) can read and intercept all information.
-- Make sure port forwarding for the port the script is using (port 8000) is **turned OFF**.
-- NEVER run this server as the root or Administrator user.
-
-## On the positive side:
-
-Home routers usually have **port forwarding off by default** for safety so the typical LAN isolation on home routers prevents external attacks. For local testing, this setup is generally safe as long as you trust the devices on your network and avoid handling sensitive data.
+- Incase the program runs but webpage doesnt load for other devices except host device, then your firewall has blocked the network access for launcher/program.
 
 ---
 
