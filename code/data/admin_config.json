@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "last_modified": "2026-08-18T08:49:42.006013Z",
+  "allowed_networks": [
+    "192.168.0.0/16",
+    "10.0.0.0/8",
+    "172.16.0.0/12"
+  ],
+  "banned_ips": [],
+  "notes": {},
+  "strict_mode": false,
+  "previous_networks": []
+}

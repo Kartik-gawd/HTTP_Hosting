@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P2P Chat</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #0d0d0d;
+    --surface:     #161616;
+    --surface2:    #1e1e1e;
+    --border:      rgba(0,229,255,0.18);
+    --accent:      #00e5ff;
+    --accent-dim:  rgba(0,229,255,0.12);
+    --danger:      #ff0055;
+    --danger-dim:  rgba(255,0,85,0.12);
+    --success:     #39ff14;
+    --text:        #e0e0e0;
+    --text-dim:    #888;
+    --radius:      14px;
+    --font:        'Segoe UI', system-ui, sans-serif;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    overflow: hidden;
+  }
+
+  #shell {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+  }
+
+  #top-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  #status-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: #444;
+    flex-shrink: 0;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+#status-dot.connecting {
+    background: #ff9900;
+    box-shadow: 0 0 6px #ff9900;
+}
+
+#status-dot.connected {
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success);
+}
+
+#status-dot.error {
+    background: var(--danger);
+}
+
+  #peer-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    scroll-behavior: smooth;
+
+    background-image: url('/icon/chat4.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-blend-mode: overlay;
+    background-color: rgba(13, 13, 13, 0.55);
+  }
+
+#messages::-webkit-scrollbar {
+    width: 4px;
+}
+
+#messages::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+  .bubble-wrap {
+    display: flex;
+    flex-direction: column;
+    max-width: 82%;
+  }
+  .bubble-wrap.mine  { 
+    align-self: flex-end; 
+    align-items: flex-end; 
+  }
+  .bubble-wrap.theirs { 
+    align-self: flex-start; 
+    align-items: flex-start; 
+  }
+
+  .bubble {
+    padding: 9px 13px;
+    border-radius: 16px;
+    line-height: 1.45;
+    word-break: break-word;
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: flex-end;
+  }
+  .bubble-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    flex: 1 1 auto;
+  }
+  .bubble-time {
+    font-size: 9px;
+    opacity: 0.5;
+    margin-left: 8px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    user-select: none;
+    align-self: flex-end;
+  }
+  .bubble-wrap.mine .bubble {
+    background: rgba(0,229,255,0.15);
+    border: 1px solid rgba(0,229,255,0.25);
+    border-bottom-right-radius: 4px;
+  }
+  .bubble-wrap.theirs .bubble {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+  }
+
+  .bubble-meta {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    padding: 0 2px;
+  }
+
+  .sys-msg {
+    align-self: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 12px;
+    max-width: 90%;
+    text-align: center;
+  }
+
+  .file-bubble {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    min-width: 200px;
+    max-width: 260px;
+  }
+  .file-bubble .file-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    word-break: break-all;
+  }
+  .file-bubble .file-size {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .file-bubble progress {
+    width: 100%;
+    height: 5px;
+    border-radius: 3px;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .file-bubble progress::-webkit-progress-bar {
+    background: var(--surface);
+    border-radius: 3px;
+}
+
+.file-bubble progress::-webkit-progress-value {
+    background: var(--accent);
+    border-radius: 3px;
+}
+
+.file-bubble progress::-moz-progress-bar {
+    background: var(--accent);
+    border-radius: 3px;
+}
+  .file-bubble .file-status {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .file-bubble a.dl-link {
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 4px 10px;
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .file-bubble a.dl-link:hover { background: var(--accent-dim); }
+
+  .share-bubble-btn {
+    font-size: 12px;
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 5px 10px;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: background 0.2s;
+  }
+  .share-bubble-btn:hover { background: var(--accent-dim); }
+  .share-bubble-btn:disabled {
+    color: var(--text-dim);
+    border-color: var(--text-dim);
+    cursor: not-allowed;
+  }
+
+  #input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  #msg-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    padding: 8px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+    height: 38px;
+    min-height: 38px;
+    max-height: 120px;
+    overflow-y: auto;
+    line-height: 1.4;
+  }
+
+#msg-input:focus {
+    border-color: var(--accent);
+}
+
+#msg-input::placeholder {
+    color: var(--text-dim);
+}
+
+#msg-input {
+    scrollbar-width: thin;
+    scrollbar-color: #666 rgba(0, 0, 0, 0.4);
+}
+
+#msg-input::-webkit-scrollbar {
+    width: 8px;
+}
+
+#msg-input::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+}
+
+#msg-input::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 8px;
+}
+
+#msg-input::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+  .icon-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+.icon-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+}
+
+#remote-video-wrap {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 2500;
+    background: #000;
+    flex-direction: column;
+}
+#remote-video-wrap.active { display: flex; }
+#remote-video {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+}
+#video-controls-bar {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    z-index: 2501;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface);
+    padding: 8px 14px;
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#remote-video-wrap.controls-hidden #video-controls-bar {
+    opacity: 0;
+    transform: translateY(100%);
+    pointer-events: none;
+}
+
+#remote-video-wrap.controls-hidden {
+    cursor: none;
+}
+
+.ctrl-btn {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.ctrl-btn:hover {
+    color: var(--accent);
+    transform: scale(1.1);
+}
+
+#video-timer {
+    color: var(--text);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    min-width: 42px;
+    text-align: center;
+    cursor: default;
+}
+
+#video-volume {
+    width: 80px;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+#video-volume:last-of-type {
+    margin-right: auto;
+}
+
+#btn-fullscreen-toggle {
+    margin-left: auto;
+}
+
+#btn-share.sharing {
+    border-color: var(--success);
+    color: var(--success);
+}
+
+#btn-send {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+#btn-send:hover {
+    background: var(--accent-dim);
+}
+
+#btn-send:disabled,
+#btn-file:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+  #consent-overlay {
+    display: none;
+  }
+
+  #consent-card {
+    max-width: 300px;
+    width: 90%;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0,229,255,0.15);
+  }
+
+#consent-card .icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+}
+
+#consent-card h2 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+#consent-card p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+}
+  #consent-card .badge {
+    font-size: 11px;
+    color: var(--success);
+    margin-bottom: 20px;
+    display: block;
+  }
+  .consent-actions {
+     display: flex; 
+     gap: 10px; 
+     justify-content: center; 
+  }
+
+  .btn-accept {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+    transition: opacity 0.2s;
+  }
+  .btn-accept:hover { opacity: 0.85; }
+
+  .btn-decline {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--danger);
+    background: transparent;
+    color: var(--danger);
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+  }
+  .btn-decline:hover { background: var(--danger-dim); }
+
+  #connecting-screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    z-index: 2990;
+    background: var(--bg);
+  }
+  #connecting-screen.hidden { display: none; }
+
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+#connecting-screen p {
+    font-size: 13px;
+    color: var(--text-dim);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+</style>
+</head>
+<body>
+<div id="shell">
+
+  <!-- Connecting screen (shown until RTCDataChannel opens) -->
+  <div id="connecting-screen">
+    <div class="spinner"></div>
+    <p id="connecting-label">Connecting…</p>
+  </div>
+
+  <!-- Consent overlay (shown when an INCOMING offer arrives) -->
+  <div id="consent-overlay" class="hidden">
+    <div id="consent-card">
+      <div class="icon">📨</div>
+      <h2>Incoming Connection</h2>
+      <p id="consent-from">Someone wants to connect</p>
+      <div class="consent-actions">
+        <button class="btn-decline" id="btn-decline">✗ Decline</button>
+        <button class="btn-accept"  id="btn-accept" >✓ Accept</button>
+      </div>
+    </div>
+  </div>
+
+<!-- Top bar -->
+<div id="top-bar">
+    <span id="status-dot" class="connecting"></span>
+    <span id="peer-label">Connecting…</span>
+
+    <button
+        id="btn-clear"
+        onclick="clearAllMessages()"
+        style="
+            background:none;
+            border:1px solid rgba(0,229,255,0.4);
+            color:#00e5ff;
+            border-radius:8px;
+            padding:4px 10px;
+            cursor:pointer;
+            font-size:12px;
+            margin-right:6px;
+            transition:background 0.2s;
+        "
+       >
+        Clear All
+    </button>
+
+    <button
+        id="btn-block"
+        onclick="toggleBlock()"
+        style="
+            background:none;
+            border:1px solid rgba(255,153,0,0.4);
+            color:#ff9900;
+            border-radius:8px;
+            padding:4px 10px;
+            cursor:pointer;
+            font-size:12px;
+            transition:background 0.2s;
+        "
+       >
+        Block
+    </button>
+</div>
+
+  <!-- Message history -->
+  <div id="messages"></div>
+
+  <div id="remote-video-wrap">
+    <video id="remote-video" autoplay playsinline></video>
+    <div id="video-controls-bar">
+      <button class="ctrl-btn" id="btn-play-pause" title="Play/Pause" onclick="toggleVideoPlayback()">⏸</button>
+      <span id="video-timer" title="Stream playtime">00:00</span>
+      <span class="ctrl-btn" id="btn-mute-toggle" title="Mute/Unmute" onclick="toggleVideoMute()">🔊</span>
+      <input type="range" id="video-volume" min="0" max="1" step="0.05" value="1" title="Adjust Volume">
+      <button class="ctrl-btn" id="btn-fullscreen-toggle" title="Toggle Fullscreen" onclick="toggleVideoFullscreen()">⛶</button>
+    </div>
+  </div>
+
+  <!-- Input row -->
+  <div id="input-row">
+    <button class="icon-btn" id="btn-share" title="Share screen" onclick="toggleScreenShare()">🖥️</button>
+    <button class="icon-btn" id="btn-file" title="Send file" onclick="pickFile()">📎</button>
+    <textarea id="msg-input" placeholder="Message…" rows="1"></textarea>
+    <button class="icon-btn" id="btn-send" onclick="sendChat()" title="Send">➤</button>
+  </div>
+
+</div>
+
+<script>
+/* 
+   peer.html — Dumb Terminal UI
+   
+   All WebRTC logic lives in index.html. This file only renders UI and exchanges
+   messages with the parent via postMessage.
+
+   Inbound from parent  (msg._p2p === true):
+     { type:'hydrate',   peerName, messages[], dcOpen }
+     { type:'dc_open' }
+     { type:'dc_close' }
+     { type:'dc_msg',    payload: { type:'chat'|'file_meta'|'file_eof'|'blocked'|'unblocked', ... } }
+     { type:'dc_bin',    data: ArrayBuffer }   — binary file chunk
+     { type:'conn_state', state }
+     { type:'consent_request', from_name }
+     { type:'consent_accepted' }
+     { type:'declined',  from_name }
+     { type:'dc_buffered_low' }
+
+   Outbound to parent   (msg._p2p === true):
+     { type:'ready' }
+     { type:'send_chat',       text }
+     { type:'send_file_meta',  name, size, mime }
+     { type:'send_file_chunk', data: ArrayBuffer }
+     { type:'send_file_eof' }
+     { type:'send_blocked',    blocked: bool }
+     { type:'consent_accept' }
+     { type:'consent_decline' }
+     { type:'close' }
+     { type:'dc_buffered_low_request' }
+ */
+
+// ── URL params 
+const params    = new URLSearchParams(location.search);
+let PEER_NAME   = decodeURIComponent(params.get("peer_name") || "Peer");
+
+// ── State 
+let _dcOpen        = false;
+let _blocked       = false;
+let _blockedByPeer = false;
+// Receiver state (live transfer only — history is in parent)
+let _rxMeta    = null;
+let _rxBytes   = 0;
+let _rxBubble  = null;
+let _rxWritable = null;
+let _rxFsHandle = null;
+let _rxChunks  = [];
+// File send pump state
+let _txResolve = null;
+let _txReject  = null;
+let _txPump    = null;
+let _txInFlight = 0;
+
+// ── DOM refs 
+const statusDot     = document.getElementById("status-dot");
+const peerLabel     = document.getElementById("peer-label");
+const connectingScr = document.getElementById("connecting-screen");
+const connectingLbl = document.getElementById("connecting-label");
+const consentOverlay = document.getElementById("consent-overlay");
+const consentFrom   = document.getElementById("consent-from");
+const messagesEl    = document.getElementById("messages");
+const msgInput      = document.getElementById("msg-input");
+const btnSend       = document.getElementById("btn-send");
+const btnDecline    = document.getElementById("btn-decline");
+const btnAccept     = document.getElementById("btn-accept");
+const btnShare      = document.getElementById("btn-share");
+const remoteVideoWrap = document.getElementById("remote-video-wrap");
+const remoteVideoEl   = document.getElementById("remote-video");
+
+// ── UI helpers 
+function toParent(data) {
+  window.parent.postMessage({ _p2p: true, ...data }, '*');
+}
+
+// Throttled toast
+let _lastCopyToastTs = 0;
+function showCopyToast() {
+  const now = Date.now();
+  if (now - _lastCopyToastTs < 2000) return;
+  _lastCopyToastTs = now;
+  showToast('Copied to clipboard!', 'success', 1500);
+}
+
+function setStatus(state, label) {
+  statusDot.className = state;
+  peerLabel.textContent = label;
+  connectingLbl.textContent = label;
+}
+
+function showConnected() {
+  connectingScr.classList.add("hidden");
+  consentOverlay.classList.add("hidden");
+  setStatus("connected", "Online");
+  btnSend.disabled = false;
+  document.getElementById("btn-file").disabled = false;
+}
+
+function showDisconnected() {
+  setStatus("error", "Offline");
+  btnSend.disabled = true;
+  document.getElementById("btn-file").disabled = true;
+  _dcOpen = false;
+}
+
+function sysMsg(text) {
+  const el = document.createElement("div");
+  el.className = "sys-msg";
+  el.textContent = text;
+  messagesEl.appendChild(el);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function addChatBubble(text, mine, ts) {
+  const wrap = document.createElement("div");
+  wrap.className = `bubble-wrap ${mine ? "mine" : "theirs"}`;
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+
+  const textEl = document.createElement("span");
+  textEl.className = "bubble-text";
+  textEl.textContent = text;
+  bubble.appendChild(textEl);
+
+  if (ts) {
+    const timeEl = document.createElement("span");
+    timeEl.className = "bubble-time";
+    timeEl.textContent = new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    bubble.appendChild(timeEl);
+  }
+
+  // Click to Copy — mirrors index.html's clipboard behavior + toast
+  bubble.title = "Click to copy";
+  bubble.style.cursor = "pointer";
+
+  bubble.onclick = () => {
+    const origBackground = bubble.style.background;
+    bubble.style.background = 'rgba(187, 134, 252, 0.3)';
+    setTimeout(() => { bubble.style.background = origBackground; }, 300);
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text)
+        .then(() => { showCopyToast(); })
+        .catch(() => executeFallbackCopy(text));
+    } else {
+      executeFallbackCopy(text);
+    }
+  };
+
+  function executeFallbackCopy(t) {
+    const textArea = document.createElement("textarea");
+    textArea.value = t;
+
+    Object.assign(textArea.style, {
+      position: 'fixed',
+      left: '-999999px',
+      top: '0'
+    });
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        showCopyToast();
+      } else {
+        showToast('Copy command failed', 'error');
+      }
+    } catch (err) {
+      console.error('Fallback copy engine error:', err);
+      showToast('Copy failed', 'error');
+    } finally {
+      document.body.removeChild(textArea);
+    }
+  }
+
+  wrap.appendChild(bubble);
+  messagesEl.appendChild(wrap);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function fmtBytes(n) {
+  if (n < 1024) return `${n} B`;
+  if (n < 1024**2) return `${(n/1024).toFixed(1)} KB`;
+  if (n < 1024**3) return `${(n/1024**2).toFixed(1)} MB`;
+  return `${(n/1024**3).toFixed(2)} GB`;
+}
+
+// ── Toast notifications (mirrors index.html behavior) 
+function showToast(message, type = 'info', durationMs = 1500) {
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    Object.assign(container.style, {
+      position: 'fixed',
+      top: '10px',
+      right: '10px',
+      zIndex: '9999',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '6px',
+      pointerEvents: 'none',
+    });
+    document.body.appendChild(container);
+  }
+
+  const colors = {
+    info:    '#00e5ff',
+    success: '#39ff14',
+    warning: '#ff9900',
+    error:   '#ff0055',
+  };
+
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  Object.assign(toast.style, {
+    background: 'rgba(18, 18, 18, 0.95)',
+    border: `1px solid ${colors[type] || colors.info}`,
+    color: '#e0e0e0',
+    padding: '8px 14px',
+    borderRadius: '8px',
+    fontSize: '12px',
+    maxWidth: '240px',
+    wordBreak: 'break-word',
+    backdropFilter: 'blur(8px)',
+    opacity: '0',
+    transform: 'translateX(20px)',
+    transition: 'opacity 0.25s ease, transform 0.25s ease',
+  });
+
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(0)';
+  });
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(20px)';
+    setTimeout(() => toast.remove(), 300);
+  }, durationMs);
+}
+
+// ── Clear all messages (UI + parent sessionStorage) 
+function clearAllMessages() {
+  messagesEl.innerHTML = '';
+  toParent({ type: 'clear_history' });
+  sysMsg("Chat cleared.");
+}
+
+// ── Render history from parent 
+function renderHistory(messages, unreadCount) {
+  messagesEl.innerHTML = '';
+  const dividerIndex = (unreadCount && unreadCount > 0) ? Math.max(0, messages.length - unreadCount) : -1;
+  messages.forEach((m, i) => {
+    if (i === dividerIndex && i > 0) {
+      const div = document.createElement("div");
+      div.className = "sys-msg";
+      div.textContent = "--- Unread Messages ---";
+      messagesEl.appendChild(div);
+    }
+    if (m.type === 'chat') {
+      addChatBubble(m.text, m.dir === 'out', m.ts);
+    } else if (m.type === 'file_meta') {
+      const wrap = document.createElement("div");
+      wrap.className = `bubble-wrap ${m.dir === 'out' ? 'mine' : 'theirs'}`;
+      const fb = document.createElement("div"); fb.className = "file-bubble";
+      const ne = document.createElement("div"); ne.className = "file-name"; ne.textContent = m.name;
+      const se = document.createElement("div"); se.className = "file-size"; se.textContent = fmtBytes(m.size);
+      const st = document.createElement("div"); st.className = "file-status";
+      if (m.status === 'sent') {
+        st.textContent = "";
+      } else if (m.status === 'received') {
+        st.textContent = "";
+      } else {
+        st.textContent = m.dir === 'out' ? "Sending…" : "Receiving…";
+      }
+      fb.append(ne, se, st);
+      wrap.appendChild(fb);
+      messagesEl.appendChild(wrap);
+    }
+  });
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+// ── Block / Unblock 
+function updateBlockUI() {
+  const anyBlocked = _blocked || _blockedByPeer;
+  const disable = anyBlocked || !_dcOpen;
+  btnSend.disabled = disable;
+  document.getElementById("btn-file").disabled = disable;
+  btnShare.disabled = disable;
+  msgInput.disabled = disable;
+}
+
+function toggleBlock() {
+  const btn = document.getElementById("btn-block");
+  _blocked = !_blocked;
+  if (_blocked) {
+    btn.textContent = "Unblock";
+    btn.style.borderColor = "rgba(57,255,20,0.4)";
+    btn.style.color = "#39ff14";
+    sysMsg(`You blocked ${PEER_NAME}.`);
+    toParent({ type: 'send_blocked', blocked: true });
+  } else {
+    btn.textContent = "Block";
+    btn.style.borderColor = "rgba(255,153,0,0.4)";
+    btn.style.color = "#ff9900";
+    sysMsg(`You unblocked ${PEER_NAME}.`);
+    toParent({ type: 'send_blocked', blocked: false });
+  }
+  updateBlockUI();
+}
+
+// ── Screen share 
+let _sharing = false;
+let _remoteStream = null;
+let _activeShareBubble = null;
+
+function toggleScreenShare() {
+  if (!_dcOpen) { sysMsg("⚠ Not connected yet."); return; }
+  if (_blocked || _blockedByPeer) { sysMsg("You have been blocked."); return; }
+  if (_sharing) { toParent({ type: 'stop_screen_share' }); return; }
+  toParent({ type: 'start_screen_share' });
+}
+
+// Called directly by index.html (same-origin) — MediaStream can't cross postMessage.
+window.attachRemoteStream = function(stream) {
+  _remoteStream = stream;
+  stream.getVideoTracks().forEach(t => { t.onended = () => hideRemoteVideo(); });
+  if (remoteVideoWrap.classList.contains("active")) {
+    remoteVideoEl.srcObject = stream;
+  }
+};
+
+function showRemoteVideo() {
+  if (!_remoteStream) return;
+  remoteVideoEl.srcObject = _remoteStream;
+  remoteVideoWrap.classList.add("active");
+  if (remoteVideoWrap.requestFullscreen) {
+    remoteVideoWrap.requestFullscreen().catch(() => {});
+  }
+}
+
+function hideRemoteVideo() {
+  remoteVideoWrap.classList.remove("active");
+  if (remoteVideoEl.srcObject) remoteVideoEl.srcObject = null;
+  if (document.fullscreenElement === remoteVideoWrap) {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+document.addEventListener("fullscreenchange", () => {
+  if (!document.fullscreenElement && remoteVideoWrap.classList.contains("active")) {
+    hideRemoteVideo();
+  }
+});
+
+function addShareBubble() {
+  const wrap = document.createElement("div"); wrap.className = "bubble-wrap theirs";
+  const fb = document.createElement("div"); fb.className = "file-bubble";
+  const ne = document.createElement("div"); ne.className = "file-name"; ne.textContent = `${PEER_NAME} is screen sharing`;
+  const btn = document.createElement("button"); btn.className = "share-bubble-btn"; btn.textContent = "Join";
+  btn.onclick = () => showRemoteVideo();
+  fb.append(ne, btn); wrap.append(fb);
+  messagesEl.appendChild(wrap); messagesEl.scrollTop = messagesEl.scrollHeight;
+  _activeShareBubble = { wrap, fb, ne, btn };
+}
+
+function endShareBubble() {
+  if (!_activeShareBubble) return;
+  _activeShareBubble.ne.textContent = `🖥️ ${PEER_NAME}'s screen share ended`;
+  _activeShareBubble.btn.textContent = "Ended";
+  _activeShareBubble.btn.disabled = true;
+  _activeShareBubble = null;
+}
+
+window.setSharingState = function(active) {
+  _sharing = active;
+  btnShare.classList.toggle("sharing", active);
+};
+
+// ── Consent dialog 
+function showConsent(senderName) {
+  consentFrom.textContent = `${senderName} wants to connect with you.`;
+  consentOverlay.classList.remove("hidden");
+  connectingScr.classList.add("hidden");
+
+  btnAccept.onclick = () => {
+    consentOverlay.classList.add("hidden");
+    toParent({ type: 'consent_accept' });
+    setStatus("connecting", "Connecting…");
+    connectingScr.classList.remove("hidden");
+  };
+  btnDecline.onclick = () => {
+    consentOverlay.classList.add("hidden");
+    toParent({ type: 'consent_decline' });
+    showDisconnected();
+  };
+}
+
+// ── Send chat 
+function sendChat() {
+  const text = msgInput.value.trim();
+  if (!text || !_dcOpen) return;
+  if (_blocked || _blockedByPeer) { sysMsg("You have been blocked."); return; }
+  toParent({ type: 'send_chat', text });
+  addChatBubble(text, true, Date.now());
+  msgInput.value = "";
+  msgInput.style.height = "38px";
+}
+
+msgInput.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); }
+});
+
+msgInput.addEventListener("input", () => {
+  msgInput.style.height = "38px";
+  msgInput.style.height = Math.min(msgInput.scrollHeight, 120) + "px";
+});
+
+// ── File send 
+const CHUNK_SIZE = 16384;
+const BUF_HIGH   = 4 * 1024 * 1024;
+
+function pickFile() {
+  if (!_dcOpen) { sysMsg("⚠ Not connected yet."); return; }
+  if (_blocked || _blockedByPeer) { sysMsg("You have been blocked."); return; }
+  const input = document.createElement("input");
+  input.type = "file"; input.multiple = true;
+  input.onchange = async () => {
+    for (const file of input.files) {
+      if (file.size >= 104857600) { sysMsg("⚠ File exceeds 100MB limit."); continue; }
+      await sendFile(file);
+    }
+  };
+  input.click();
+}
+
+async function sendFile(file) {
+  const wrap = document.createElement("div"); wrap.className = "bubble-wrap mine";
+  const fb = document.createElement("div"); fb.className = "file-bubble";
+  const ne = document.createElement("div"); ne.className = "file-name"; ne.textContent = file.name;
+  const se = document.createElement("div"); se.className = "file-size"; se.textContent = fmtBytes(file.size);
+  const prog = document.createElement("progress"); prog.max = 100; prog.value = 0;
+  const st = document.createElement("div"); st.className = "file-status"; st.textContent = "Sending…";
+  fb.append(ne, se, prog, st); wrap.append(fb);
+  messagesEl.appendChild(wrap); messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  toParent({ type: 'send_file_meta', name: file.name, size: file.size, mime: file.type || 'application/octet-stream' });
+
+  let offset = 0;
+
+  await new Promise((resolve, reject) => {
+    _txResolve = resolve; _txReject = reject;
+    _txInFlight = 0;
+
+    _txPump = function pump() {
+      if (!_dcOpen) { reject(new Error("Channel closed")); return; }
+      if (offset >= file.size) {
+        _txPump = null;
+        toParent({ type: 'send_file_eof' });
+        prog.remove(); st.remove();
+        resolve(); return;
+      }
+      const slice = file.slice(offset, offset + CHUNK_SIZE);
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const buf = ev.target.result;
+        toParent({ type: 'send_file_chunk', data: buf });
+        offset += buf.byteLength;
+        _txInFlight += buf.byteLength;
+        const pct = Math.round((offset / file.size) * 100);
+        prog.value = pct; st.textContent = `${pct}% — ${fmtBytes(offset)} / ${fmtBytes(file.size)}`;
+        if (_txInFlight >= BUF_HIGH) {
+          // Pause and wait for the parent to report the buffer has drained.
+          toParent({ type: 'dc_buffered_low_request' });
+          return;
+        }
+        setTimeout(pump, 0);
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsArrayBuffer(slice);
+    };
+    _txPump();
+  });
+}
+
+// ── Receiver 
+async function startReceiveBubble(meta) {
+  _rxMeta = meta; _rxBytes = 0; _rxChunks = []; _rxWritable = null; _rxFsHandle = null;
+  const wrap = document.createElement("div"); wrap.className = "bubble-wrap theirs";
+  const fb = document.createElement("div"); fb.className = "file-bubble";
+  const ne = document.createElement("div"); ne.className = "file-name"; ne.textContent = meta.name;
+  const se = document.createElement("div"); se.className = "file-size"; se.textContent = fmtBytes(meta.size);
+  const prog = document.createElement("progress"); prog.max = 100; prog.value = 0;
+  const st = document.createElement("div"); st.className = "file-status"; st.textContent = "Receiving…";
+  fb.append(ne, se, prog, st); wrap.append(fb);
+  messagesEl.appendChild(wrap); messagesEl.scrollTop = messagesEl.scrollHeight;
+  _rxBubble = { prog, statusEl: st, fileBubble: fb };
+
+  if (window.showSaveFilePicker) {
+    try {
+      _rxFsHandle = await window.showSaveFilePicker({ suggestedName: meta.name, types: [{ description: "File", accept: { [meta.mime || "application/octet-stream"]: [] } }] });
+      _rxWritable = await _rxFsHandle.createWritable();
+    } catch { _rxWritable = null; _rxFsHandle = null; }
+  }
+}
+
+async function finalizeReceive() {
+  if (!_rxMeta || !_rxBubble) return;
+  _rxBubble.prog.remove();
+  if (_rxWritable) {
+    try { await _rxWritable.close(); } catch {}
+    _rxWritable = null;
+    _rxBubble.statusEl.textContent = `Saved to disk — ${fmtBytes(_rxBytes)}`;
+    _rxBubble.statusEl.remove();
+  } else {
+    const blob = new Blob(_rxChunks, { type: _rxMeta.mime });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.className = "dl-link"; link.href = url; link.download = _rxMeta.name; link.textContent = "Download";
+    _rxBubble.statusEl.remove();
+    _rxBubble.fileBubble.appendChild(link);
+  }
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+  _rxMeta = null; _rxChunks = []; _rxBytes = 0; _rxBubble = null; _rxFsHandle = null;
+}
+
+// ── Video Controls 
+function toggleVideoFullscreen() {
+  if (!document.fullscreenElement) {
+    if (remoteVideoWrap.requestFullscreen) {
+      remoteVideoWrap.requestFullscreen().catch(() => {});
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen().catch(() => {});
+    }
+  }
+}
+
+// Map the custom volume slider directly to the video element
+document.getElementById("video-volume").addEventListener("input", (e) => {
+  const vol = parseFloat(e.target.value);
+  remoteVideoEl.volume = vol;
+  remoteVideoEl.muted = vol === 0;
+  updateMuteIcon();
+});
+
+// Play / Pause toggle
+function toggleVideoPlayback() {
+  if (remoteVideoEl.paused) {
+    remoteVideoEl.play().catch(() => {});
+  } else {
+    remoteVideoEl.pause();
+  }
+}
+
+function updatePlayPauseIcon() {
+  const btn = document.getElementById("btn-play-pause");
+  btn.textContent = remoteVideoEl.paused ? "▶" : "⏸";
+}
+remoteVideoEl.addEventListener("play", updatePlayPauseIcon);
+remoteVideoEl.addEventListener("pause", updatePlayPauseIcon);
+
+// Mute / Unmute toggle
+function toggleVideoMute() {
+  remoteVideoEl.muted = !remoteVideoEl.muted;
+  if (!remoteVideoEl.muted && remoteVideoEl.volume === 0) {
+    remoteVideoEl.volume = 1;
+    document.getElementById("video-volume").value = 1;
+  }
+  updateMuteIcon();
+}
+
+function updateMuteIcon() {
+  const icon = document.getElementById("btn-mute-toggle");
+  icon.textContent = (remoteVideoEl.muted || remoteVideoEl.volume === 0) ? "🔇" : "🔊";
+}
+
+// Live timer — tracks currentTime as MM:SS, read-only
+function formatTime(sec) {
+  sec = Math.floor(sec || 0);
+  const m = Math.floor(sec / 60).toString().padStart(2, "0");
+  const s = (sec % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+remoteVideoEl.addEventListener("timeupdate", () => {
+  document.getElementById("video-timer").textContent = formatTime(remoteVideoEl.currentTime);
+});
+
+// Auto-hide controls bar + cursor after inactivity
+let controlsHideTimer = null;
+function showVideoControls() {
+  remoteVideoWrap.classList.remove("controls-hidden");
+  clearTimeout(controlsHideTimer);
+  controlsHideTimer = setTimeout(() => {
+    remoteVideoWrap.classList.add("controls-hidden");
+  }, 2500);
+}
+remoteVideoWrap.addEventListener("mousemove", showVideoControls);
+remoteVideoWrap.addEventListener("touchstart", showVideoControls, { passive: true });
+// Kick off the initial hide timer
+showVideoControls();
+
+// ── Handle dc_msg from parent 
+function handleDcMsg(payload) {
+  if (payload.type === 'chat') {
+    if (_blocked) return;
+    addChatBubble(payload.text, false, Date.now());
+  } else if (payload.type === 'file_meta') {
+    if (_blocked) return;
+    startReceiveBubble(payload);
+  } else if (payload.type === 'file_eof') {
+    if (_blocked) return;
+    finalizeReceive();
+  } else if (payload.type === 'blocked') {
+    _blockedByPeer = true;
+    updateBlockUI();
+    sysMsg(`${PEER_NAME} has blocked you.`);
+  } else if (payload.type === 'unblocked') {
+    _blockedByPeer = false;
+    updateBlockUI();
+    sysMsg(`${PEER_NAME} has unblocked you.`);
+  } else if (payload.type === 'remote_screen_share') {
+    if (payload.active) {
+      addShareBubble();
+    } else {
+      endShareBubble();
+      hideRemoteVideo();
+      _remoteStream = null;
+    }
+  }
+}
+
+// ── Inbound postMessage from parent 
+window.addEventListener("message", (event) => {
+  const msg = event.data;
+  if (!msg || !msg._p2p) return;
+
+  switch (msg.type) {
+    case 'hydrate':
+      PEER_NAME = msg.peerName || PEER_NAME;
+      peerLabel.textContent = PEER_NAME;
+      renderHistory(msg.messages || [], msg.unreadCount || 0);
+      if (msg.dcOpen) {
+        _dcOpen = true;
+        showConnected();
+      } else {
+        setStatus("connecting", `Connecting to ${PEER_NAME}…`);
+      }
+      break;
+
+    case 'dc_open':
+      _dcOpen = true;
+      showConnected();
+      break;
+
+    case 'dc_close':
+      showDisconnected();
+      break;
+
+    case 'dc_msg':
+      handleDcMsg(msg.payload);
+      break;
+
+    case 'dc_bin':
+      if (!_rxMeta) return;
+      _rxBytes += msg.data.byteLength;
+      if (_rxWritable) { _rxWritable.write(msg.data).catch(() => {}); }
+      else { _rxChunks.push(msg.data); }
+      if (_rxBubble) {
+        const pct = Math.round((_rxBytes / _rxMeta.size) * 100);
+        _rxBubble.prog.value = pct;
+        _rxBubble.statusEl.textContent = `${pct}% — ${fmtBytes(_rxBytes)} / ${fmtBytes(_rxMeta.size)}`;
+      }
+      break;
+
+    case 'dc_buffered_low':
+      _txInFlight = 0;
+      if (_txPump) _txPump();
+      break;
+
+    case 'conn_state':
+      if (msg.state === 'connected') { _dcOpen = true; showConnected(); }
+      else if (msg.state === 'failed' || msg.state === 'disconnected') { showDisconnected(); }
+      else if (msg.state === 'connecting') { setStatus("connecting", `Reconnecting to ${PEER_NAME}…`); }
+      break;
+
+    case 'consent_request':
+      showConsent(msg.from_name || PEER_NAME);
+      break;
+
+    case 'consent_accepted':
+      consentOverlay.classList.add("hidden");
+      setStatus("connecting", "Connecting…");
+      connectingScr.classList.remove("hidden");
+      break;
+
+    case 'declined':
+      sysMsg(`❌ ${msg.from_name || PEER_NAME} declined the connection.`);
+      showDisconnected();
+      connectingScr.classList.remove("hidden");
+      document.querySelector(".spinner").style.display = "none";
+      setStatus("error", `${msg.from_name || PEER_NAME} declined`);
+      break;
+
+    case 'local_screen_share_state':
+      window.setSharingState(!!msg.sharing);
+      if (msg.sharing) {
+        sysMsg(msg.hasAudio === false ? "Sharing screen (no audio capture available)." : "Screen sharing STARTED.");
+      } else {
+        sysMsg("Screen sharing STOPPED.");
+      }
+      break;
+
+    case 'screen_share_failed':
+      sysMsg("⚠ Screen share failed or was cancelled.");
+      window.setSharingState(false);
+      break;
+  }
+});
+
+// ── Boot: announce ready to parent 
+(function boot() {
+  btnSend.disabled = true;
+  document.getElementById("btn-file").disabled = true;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+    btnShare.disabled = true;
+    btnShare.title = "Screen sharing not supported on this device";
+    btnShare.style.opacity = "0.35";
+    btnShare.style.cursor = "not-allowed";
+  }
+  setStatus("connecting", `Connecting to ${PEER_NAME}…`);
+  // Signal readiness so parent can hydrate us with history
+  toParent({ type: 'ready' });
+})();
+</script>
+</body>
+</html>

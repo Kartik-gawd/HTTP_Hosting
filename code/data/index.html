@@ -1,0 +1,3987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your Paradise</title>
+    <link rel="icon" type="image/png" href="/icon/banner.png">
+    <style>
+    
+    :root {
+        --bg: #121212;
+        --card: rgba(30, 30, 30, 0.7);
+        --text: #e0e0e0;
+        --accent: #bb86fc;
+        --hover: rgba(44, 44, 44, 0.6);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --neon-cyan: #00e5ff;
+        --neon-red: #ff00aa;
+    }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        color: var(--text);
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+
+        background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+
+        background: linear-gradient(
+            to bottom,
+            rgba(255,255,255,0) 0%,
+            rgba(255,255,255,0) 50%,
+            rgba(0,0,0,0.95) 50%,
+            rgba(0,0,0,0.95) 100%
+        );
+
+        background-size: 100% 6px;
+
+        pointer-events: none;
+        z-index: 0;
+
+        opacity: 0.95;
+    }
+
+    body > * {
+        position: relative;
+        z-index: 1;
+    }
+        @keyframes subtlePulse {
+            0%, 100% { filter: brightness(0.7); }
+            50%       { filter: brightness(1.1); }
+        }
+        .cyber-hollow {
+            font-size: 4.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            display: inline-block;
+            cursor: pointer;
+            color: transparent;
+            -webkit-text-stroke: 3px var(--neon-cyan);
+            text-shadow:
+                0 0 10px rgba(0, 229, 255, 0.8),
+                0 0 20px rgba(0, 229, 255, 0.5),
+                0 0 40px rgba(0, 229, 255, 0.3),
+                6px 6px 0 var(--neon-red);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            animation: subtlePulse 4s infinite ease-in-out;
+        }
+        .cyber-hollow:hover {
+            color: rgba(255, 0, 170, 0.15);
+            -webkit-text-stroke: 3px var(--neon-red);
+            text-shadow:
+                0 0 10px rgba(255, 0, 170, 0.8),
+                0 0 20px rgba(255, 0, 170, 0.5),
+                0 0 40px rgba(255, 0, 170, 0.3),
+                -6px -6px 0 var(--neon-cyan);
+            transform: translate(6px, 6px);
+        }
+
+    #admin-console-link{
+        display:none; 
+        align-items:center; 
+        gap:6px; padding:5px 13px;
+        background:rgba(0,229,255,0.08); 
+        border:1px solid rgba(0,229,255,0.35);
+        border-radius:8px; 
+        color:var(--neon-cyan); font-size:13px; font-weight:600;
+        text-decoration:none; letter-spacing:1px; 
+        transition:all 0.2s;
+        margin-left:auto;
+    }  
+
+    .github-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.75;
+        transition: opacity 0.3s ease;
+        text-decoration: none;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .github-link:hover {
+        opacity: 1;
+    }
+
+    .github-link::before {
+        content: "";
+        position: absolute;
+        inset: -4px;
+        border-radius: 50%;
+
+        background: conic-gradient(
+        from 0deg,
+
+        var(--neon-cyan) 0deg 28deg,
+        transparent 28deg 90deg,
+
+        var(--neon-cyan) 90deg 118deg,
+        transparent 118deg 180deg,
+
+        var(--neon-cyan) 180deg 208deg,
+        transparent 208deg 270deg,
+
+        var(--neon-cyan) 270deg 298deg,
+        transparent 298deg 360deg
+    );
+
+        mask: radial-gradient(
+            circle,
+            transparent 62%,
+            black 68%,
+            black 74%,
+            transparent 80%
+        );
+
+        -webkit-mask: radial-gradient(
+            circle,
+            transparent 62%,
+            black 68%,
+            black 74%,
+            transparent 80%
+        );
+
+        opacity: 0;
+        transition: opacity 0.4s ease;
+
+        animation: spin-brackets 3s linear infinite;
+    }
+
+    .github-link:hover::before {
+        opacity: 1;
+    }
+
+    #github-icon{
+    width: 40px;
+    height: 40px;
+    background-color: var(--neon-cyan);
+    border-radius: 100%; 
+    border-spacing: 1cap;
+    }
+
+    @keyframes spin-brackets {
+        from {transform: rotate(0deg);}
+        to { transform: rotate(360deg);}
+    }
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            flex-wrap: wrap; 
+            gap: 10px; }
+
+        .header2 { 
+            display: flex; 
+            align-items: center; 
+            width: 100%; 
+            padding: 10px 20px; 
+            box-sizing: border-box; 
+            position: relative;
+        }   
+        h1 { 
+            font-size: 1.5rem; 
+            color: var(--accent); 
+            margin: 0; 
+        }
+        .breadcrumb { 
+            font-size: 14px; 
+            color: #888; 
+            margin: 9px 0; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; }
+
+        .breadcrumb a { 
+            color: var(--accent); 
+            text-decoration: none; 
+        }
+
+        .breadcrumb a:hover { 
+            text-decoration: underline; 
+        }
+        .breadcrumb span { 
+            color: #666; 
+            cursor: default; 
+        }
+        .breadcrumb-sep { 
+            color: #444; 
+        }
+
+    .controls { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        margin-bottom: 20px; 
+        flex-wrap: wrap; 
+        gap: 10px; 
+        width: 100%; 
+        position: relative; 
+        z-index: 10; 
+    }    
+
+    #search {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--glass-border);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 12px;
+        outline: none;
+        width: 100%;
+        max-width: 300px;
+        font-size: 14px;
+        font-family: inherit;
+        backdrop-filter: blur(10px);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #search::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    #search:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.15);
+    }
+
+    .sort-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .sort-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text);
+        border: 1px solid var(--glass-border);
+        padding: 10px 15px;
+        border-radius: 12px;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+    }
+
+    .sort-content {
+        display: none;
+        position: absolute;
+        background: rgba(30, 30, 30, 0.98);
+        min-width: 160px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        z-index: 100;
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        top: calc(100% + 6px);
+        left: 0;
+        overflow: visible;
+    }
+
+    .sort-content a {
+        color: var(--text);
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        border-radius: 8px;
+        position: relative;
+        z-index: 100;
+    }
+
+    .sort-content a:hover {
+        background: var(--hover);
+    }
+
+    .sort-content.open {
+        display: block;
+    }
+
+    .view-toggle {
+        display: flex;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 4px;
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(10px);
+    }
+
+    .view-btn {
+        background: transparent;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: var(--text);
+        font-size: 16px;
+    }
+
+    .view-btn.active {
+        background: var(--accent);
+        color: black;
+    }
+
+    .upload-btn {
+        background: var(--accent);
+        color: black;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .folder-btn {
+        background: rgb(255, 255, 77);
+        color: black;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+    }
+        .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 20px;
+    }
+
+    .list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .list-header {
+        display: none;
+    }
+
+    .list .list-header {
+        display: flex;
+        flex-direction: row;
+        padding: 0 16px 10px 16px;
+        color: #888;
+        font-size: 12px;
+        font-weight: bold;
+        border-bottom: 1px solid var(--glass-border);
+        margin-bottom: 5px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .list-header .h-icon {
+        width: 64px;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    .list-header .h-name {
+        flex: 3;
+    }
+
+    .list-header .h-type {
+        flex: 1;
+    }
+
+    .list-header .h-size {
+        flex: 1;
+    }
+
+    .list-header .h-date {
+        flex: 1.5;
+        text-align: right;
+    }
+
+    .list .item {
+        flex-direction: row;
+        text-align: left;
+        padding: 12px 16px;
+        border-radius: 12px;
+    }
+
+    .list .file-icon {
+        margin-bottom: 0;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    .list .info {
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+        flex: 1;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .list .name {
+        flex: 3;
+        font-size: 14px;
+        margin-top: 0;
+        text-align: left;
+    }
+
+    .list .meta {
+        font-size: 12px;
+        margin-top: 0;
+        text-align: left;
+    }
+
+    .list .meta.type {
+        flex: 1;
+        display: block;
+    }
+
+    .list .meta.size {
+        flex: 1;
+        display: block;
+    }
+
+    .list .meta.date {
+        flex: 1.5;
+        text-align: right;
+    }
+
+        .list .grid-meta {
+        display: none;
+    }
+
+    .grid .list-meta {
+        display: none;
+    }
+
+    .item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        color: var(--text);
+        text-decoration: none;
+        padding: 15px;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        background: var(--card);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .item:hover {
+        background: var(--hover);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .file-icon {
+        width: 64px;
+        height: 80px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 900;
+        color: white;
+        margin-bottom: 8px;
+        position: relative;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .icon-red {
+        background: linear-gradient(135deg, #e53935, #b71c1c);
+    }
+
+    .icon-blue {
+        background: linear-gradient(135deg, #1e88e5, #0d47a1);
+    }
+
+    .icon-green {
+        background: linear-gradient(135deg, #43a047, #1b5e20);
+    }
+
+    .icon-yellow {
+        background: linear-gradient(135deg, #fdd835, #f9a825);
+        color: #212121;
+    }
+
+    .icon-purple {
+        background: linear-gradient(135deg, #8e24aa, #4a148c);
+    }
+
+    .icon-teal {
+        background: linear-gradient(135deg, #00acc1, #006064);
+    }
+
+    .icon-gray {
+        background: linear-gradient(135deg, #757575, #424242);
+    }
+
+    .icon-orange {
+        background: linear-gradient(135deg, #fb8c00, #e65100);
+    }
+
+    .icon-folder {
+        width: 80px;
+        height: 64px;
+        background: linear-gradient(135deg, #ffa000, #ff6f00);
+        border-radius: 8px;
+    }
+
+    .icon-folder::before {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: 0;
+        width: 25px;
+        height: 10px;
+        background: #ffa000;
+        border-radius: 6px 6px 0 0;
+    }
+
+    .info {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        width: 100%;
+    }
+
+    .name {
+        font-weight: 500;
+        font-size: 12px;
+        word-break: break-word;
+        margin-top: 5px;
+        line-height: 1.3;
+    }
+
+    .meta {
+        font-size: 10px;
+        color: #888;
+        margin-top: 2px;
+    }
+
+        .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+    }
+
+    .modal {
+        background: rgba(30, 30, 30, 0.9);
+        padding: 24px;
+        border-radius: 20px;
+        width: 600px;
+        max-width: 95%;
+        text-align: center;
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        transform: scale(0.95);
+        transition: transform 0.3s ease;
+        max-height: 95vh;
+        overflow-y: auto;
+        position: relative;
+    }
+
+    .modal.active {
+        transform: scale(1);
+    }
+
+    .modal h3 {
+        margin-top: 0;
+        color: white;
+        margin-bottom: 8px;
+        word-break: break-all;
+    }
+
+    .media-player {
+        margin: 15px 0;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .media-player video,
+    .media-player audio {
+        width: 100%;
+        border-radius: 8px;
+        outline: none;
+        background: #000;
+        max-height: 60vh;
+    }
+
+    .media-player img {
+        max-width: 100%;
+        max-height: 60vh;
+        border-radius: 8px;
+        object-fit: contain;
+    }
+
+    .gallery-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--glass-border);
+        color: white;
+        font-size: 24px;
+        padding: 15px 10px;
+        cursor: pointer;
+        border-radius: 8px;
+        z-index: 1010;
+        transition: background 0.2s;
+        backdrop-filter: blur(5px);
+    }
+
+    .gallery-btn:hover {
+        background: var(--accent);
+        color: black;
+    }
+
+        #btn-prev { 
+            left: 30px; 
+        }
+
+        #btn-next { 
+            right: 30px; 
+        }
+
+        @media (max-width: 768px) { #btn-prev { left: 10px; } #btn-next { right: 10px; } 
+            .header2 {
+                flex-direction: column;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .github-link {
+                position: relative;
+                left: auto;
+                transform: none;
+            }
+        }
+
+        .btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        cursor: pointer;
+        text-decoration: none;
+        box-sizing: border-box;
+        font-weight: 600;
+    }
+
+    .btn-download {
+        background: var(--accent);
+        color: black;
+    }
+
+    .btn-preview {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid var(--glass-border);
+    }
+
+    .btn-cancel {
+        background: transparent;
+        color: #777;
+        padding: 10px;
+        border: 1px solid transparent;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .btn-cancel:hover {
+        color: #ccc;
+        border-color: rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.06);
+    }
+        
+        @keyframes ctxFadeIn {
+        from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+        to   { opacity: 1; transform: scale(1)    translateY(0);    }
+    }
+    .ctx-item {
+        padding: 11px 18px;
+        font-size: 14px;
+        cursor: pointer;
+        color: var(--text);
+        transition: background 0.15s ease, color 0.15s ease;
+        border-radius: 8px;
+        margin: 2px 6px;
+    }
+
+    .ctx-item:hover {
+        background: var(--hover);
+    }
+
+    .ctx-item-danger {
+        color: #ff5577;
+    }
+
+    .ctx-item-danger:hover {
+        background: rgba(255, 0, 85, 0.15);
+        color: #ff2255;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .cb-container {
+        background: rgba(30, 30, 30, 0.8);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        margin-bottom: 20px;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        height: 250px;
+        backdrop-filter: blur(20px);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .cb-container.fullscreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        max-width: 100%;
+        height: 100dvh;
+        z-index: 8999;
+        margin: 0;
+        border-radius: 0;
+        padding: 10px;
+        box-sizing: border-box;
+        background: rgba(15, 15, 15, 0.95);
+    }
+
+    body.no-scroll {
+        overflow: hidden;
+        touch-action: none;
+    }
+
+    .cb-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .cb-header h3 {
+        margin: 0;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .cb-header button {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--glass-border);
+        color: white;
+        border-radius: 8px;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+        .cb-messages { 
+            flex: 1; 
+            overflow-y: auto; 
+            background: rgba(0,0,0,0.3); 
+            border-radius: 8px; padding: 10px; margin-bottom: 10px; 
+            font-family: monospace; white-space: pre-wrap; word-break: break-word; 
+            color: #ddd; 
+            display: flex; flex-direction: column; gap: 4px; 
+            border: 1px solid rgba(255,255,255,0.05); 
+
+            background-image: url('/icon/chat4.jpg'); 
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover; 
+        
+            background-blend-mode: overlay;
+            background-color: rgba(30, 30, 30, 0.5);
+
+            scrollbar-color: #666 rgba(0,0,0,0.4);
+            scrollbar-width: thin;
+        }
+        .cb-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+        .cb-messages::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.4);
+            border-radius: 8px;
+        }
+        .cb-messages::-webkit-scrollbar-thumb {
+            background: #666;
+            border-radius: 8px;
+        }
+        .cb-messages::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+    
+        .cb-message {
+        cursor: pointer;
+        padding: 3px; 
+        border-radius: 6px; 
+        transition: background 0.2s ease; 
+        border-left: 3px solid transparent;
+        }
+
+        .cb-message:hover {
+            background: rgba(255,255,255,0.15);
+            border-left: 3px solid var(--accent);
+        }
+
+        .cb-input-area {
+        display: flex;
+        gap: 10px;
+    }
+
+    .cb-input-area textarea {
+        flex: 1;
+        padding: 10px;
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        resize: none;
+        outline: none;
+        height: 20px;
+        font-family: inherit;
+    }
+
+    .cb-input-area textarea:focus {
+        border-color: var(--accent);
+    }
+
+    .cb-input-area textarea {
+        scrollbar-color: #666 rgba(0,0,0,0.4);
+        scrollbar-width: thin;
+    }
+    .cb-input-area textarea::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .cb-input-area textarea::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 8px;
+    }
+
+    .cb-input-area textarea::-webkit-scrollbar-thumb {
+        background: #666;
+        border-radius: 8px;
+    }
+
+    .cb-input-area textarea::-webkit-scrollbar-thumb:hover {
+        background: #888;
+    }
+
+    .cb-input-area button {
+        background: var(--accent);
+        color: black;
+        border: none;
+        border-radius: 12px;
+        padding: 0 20px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .upload-form {
+        background: rgba(30, 30, 30, 0.8);
+        padding: 20px;
+        border-radius: 16px;
+        margin: 20px 0;
+        border: 1px solid var(--glass-border);
+    }
+
+    .drop-zone {
+        border: 2px dashed var(--glass-border);
+        border-radius: 12px;
+        padding: 40px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .drop-zone.dragover {
+        background: rgba(187, 134, 252, 0.1);
+        border-color: var(--accent);
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        margin-bottom: 10px;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: var(--accent);
+        width: 0%;
+        transition: width 0.3s;
+    }
+
+    .pause-resume-btn {
+        background: #e67e00;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+        box-shadow: 0 0 0 transparent;
+    }
+    .pause-resume-btn:hover {
+        background: #ff9a1a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 14px rgba(230, 126, 0, 0.5);
+    }
+    .pause-resume-btn.paused {
+        background: #4CAF50;
+    }
+    .pause-resume-btn.paused:hover {
+        background: #66bb6a;
+        box-shadow: 0 4px 14px rgba(76, 175, 80, 0.5);
+    }
+
+    #radar-list {
+        list-style: none;
+        padding: 0;
+        margin: 5px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .alias-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 6px 0 2px 0;
+    }
+
+    .alias-bar input {
+        padding: 7px 12px;
+        font-size: 13px;
+        border-radius: 10px;
+        border: 1px solid var(--glass-border);
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        outline: none;
+        width: 160px;
+        backdrop-filter: blur(10px);
+        transition: border-color 0.2s;
+    }
+
+    .alias-bar input:focus {
+        border-color: var(--accent);
+    }
+
+    .alias-bar button {
+        background: var(--accent);
+        color: black;
+        border: none;
+        border-radius: 10px;
+        padding: 7px 14px;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+
+    .alias-bar button:hover {
+        opacity: 0.85;
+    }
+
+    #online-expand-btn {
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        border-radius: 5px !important;
+        padding: 1px 5px !important;
+        transition: border-color 0.2s, color 0.2s;
+    }
+
+    #online-expand-btn:hover {
+        color: var(--neon-cyan) !important;
+        border-color: var(--neon-cyan) !important;
+    }
+
+    #p2p-hamburger {
+        position: fixed;
+        top: 14px;
+        left: 14px;
+        z-index: 2000;
+
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+
+        background: rgba(0, 229, 255, 0.08);
+        border: 2px solid rgba(0, 229, 255, 0.479);
+
+        color: var(--accent, #00e5ff);
+        font-size: 20px;
+        cursor: pointer;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        transition: background 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: none;
+    }
+
+    #p2p-hamburger:hover {
+        background: rgba(0, 229, 255, 0.32);
+    }
+
+    #p2p-hamburger:active {
+        transform: scale(0.96);
+    }
+
+    #p2p-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 270px;
+        height: 100vh;
+        z-index: 2900;
+
+        background: rgba(13, 13, 13, 0.97);
+        border-right: 1px solid rgba(0, 229, 255, 0.18);
+        backdrop-filter: blur(20px);
+
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+
+        transform: translateX(-100%);
+        transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #p2p-sidebar.active {
+        transform: translateX(0);
+    }
+
+    .p2p-sidebar-header {
+        padding: 18px 16px 12px;
+        border-bottom: 1px solid rgba(0, 229, 255, 0.12);
+
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .p2p-sidebar-title {
+        flex: 1;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--accent, #00e5ff);
+    }
+
+    #p2p-radar-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+
+        background: #00e5ff;
+        flex-shrink: 0;
+
+        box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.6);
+        animation: radarPulse 2s infinite;
+    }
+
+    #p2p-peer-count {
+        padding: 2px 9px;
+
+        font-size: 11px;
+        color: #00e5ff;
+
+        background: rgba(0, 229, 255, 0.12);
+        border: 1px solid rgba(0, 229, 255, 0.25);
+        border-radius: 20px;
+    }
+
+    #p2p-peer-list {
+        flex: 1;
+        overflow-y: auto;
+
+        padding: 10px 8px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    #p2p-empty-msg {
+        padding: 30px 0;
+
+        text-align: center;
+        color: #555;
+        font-size: 12px;
+    }
+
+    #p2p-empty-msg strong {
+        color: #00e5ff;
+    }
+
+    #p2p-status-pill {
+        display: none;
+        margin-left: auto;
+        padding: 4px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(0, 229, 255, 0.3);
+        background: rgba(0, 229, 255, 0.08);
+        color: #00e5ff;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .p2p-sidebar-footer {
+        padding: 12px 14px;
+
+        border-top: 1px solid rgba(0, 229, 255, 0.12);
+
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    #p2p-my-name-label {
+        text-align: center;
+        font-size: 11px;
+        color: #666;
+    }
+
+    #p2p-connect-btn {
+        width: 100%;
+        padding: 9px;
+
+        border-radius: 10px;
+        border: 1px solid rgba(0, 229, 255, 0.3);
+
+        background: rgba(0, 229, 255, 0.12);
+        color: #00e5ff;
+
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+
+        transition: background 0.2s ease;
+    }
+
+    #p2p-connect-btn:hover {
+        background: rgba(0, 229, 255, 0.22);
+    }
+
+    #p2p-backdrop {
+        display: none;
+
+        position: fixed;
+        inset: 0;
+        z-index: 2800;
+
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(2px);
+    }
+
+    #p2p-backdrop.active {
+        display: block;
+    }
+
+    @keyframes radarPulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.6);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(0, 229, 255, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(0, 229, 255, 0);
+        }
+    }
+
+    @keyframes radarPulse {
+        0%   { box-shadow: 0 0 0 0 rgba(0,229,255,0.6); }
+        70%  { box-shadow: 0 0 0 10px rgba(0,229,255,0); }
+        100% { box-shadow: 0 0 0 0 rgba(0,229,255,0); }
+    }
+
+    #p2p-windows {
+        position: fixed;
+        inset: 0;
+        z-index: 4000;
+        pointer-events: none; 
+    }
+
+    .p2p-window {
+        pointer-events: auto;
+        position: fixed;
+        width: 340px;
+        height: 480px;
+        border-radius: 18px;
+        border: 1px solid rgba(0,229,255,0.28);
+        background: #0d0d0d;
+        box-shadow: 0 16px 48px rgba(0,0,0,0.7), 0 0 24px rgba(0,229,255,0.08);
+        z-index: 4000;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        animation: winFadeIn 0.22s ease;
+    }
+    @keyframes winFadeIn {
+        from { opacity: 0; transform: scale(0.92) translateY(10px); }
+        to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .p2p-drag-bar {
+        height: 36px;
+        background: rgba(0,229,255,0.07);
+        border-bottom: 1px solid rgba(0,229,255,0.15);
+        cursor: grab;
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        gap: 8px;
+        user-select: none;
+        flex-shrink: 0;
+    }
+    .p2p-drag-bar:active { cursor: grabbing; }
+
+    .p2p-drag-bar .drag-title {
+        font-size: 12px;
+        color: #00e5ff;
+        font-weight: 600;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .p2p-drag-bar .drag-close {
+        width: 22px; height: 22px;
+        border-radius: 50%;
+        background: rgba(255,0,85,0.15);
+        border: 1px solid rgba(255,0,85,0.3);
+        color: #ff0055;
+        cursor: pointer;
+        font-size: 12px;
+        display: flex; align-items: center; justify-content: center;
+        transition: background 0.2s;
+        flex-shrink: 0;
+    }
+    .p2p-drag-bar .drag-close:hover { 
+        background: rgba(255,0,85,0.35); 
+    }
+
+    .p2p-iframe {
+        flex: 1;
+        border: none;
+        width: 100%;
+        display: block;
+        border-radius: 0 0 18px 18px;
+    }
+
+    .cv-select {
+        width: 100%;
+        background: rgba(255,255,255,0.08);
+        color: #e0e0e0;
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 13px;
+        cursor: pointer;
+        outline: none;
+    }
+    .cv-select:focus { border-color: var(--neon-cyan); }
+    .cv-select option {
+        background: #000;
+        color: #fff;
+    }
+
+    #folder-ctx-menu {
+        display: none;
+        position: fixed;
+        z-index: 5000;
+
+        min-width: 170px;
+        padding: 6px 0;
+
+        background: rgba(22, 22, 22, 0.97);
+        border: 1px solid var(--glass-border);
+        border-radius: 14px;
+
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+
+        animation: ctxFadeIn 0.12s ease;
+    }
+
+    #folder-ctx-menu.active {
+        display: block;
+    }
+
+    @keyframes ctxFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-6px) scale(0.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+</style>
+</head>
+<body>
+
+<button id="p2p-hamburger" onclick="toggleP2PSidebar()" title="Chats">☰</button>
+
+<!-- Sidebar -->
+<div id="p2p-sidebar">
+    <div class="p2p-sidebar-header">
+        <span id="p2p-radar-dot"></span>
+            <span class="p2p-sidebar-title">
+            Online Users
+        </span>
+
+        <span id="p2p-peer-count">0</span>
+
+        <span id="p2p-status-pill">
+    Connecting…
+</span>
+    </div>
+
+    <div id="p2p-peer-list">
+        <div id="p2p-empty-msg">
+            Searching...
+        </div>
+    </div>
+
+    <div class="p2p-sidebar-footer">
+        <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="_p2pRefreshPeers()" style="flex:1;padding:7px 0;border-radius:9px;border:1px solid rgba(0,229,255,0.25);background:rgba(0,229,255,0.06);color:#00e5ff;font-size:12px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='rgba(0,229,255,0.15)'" onmouseout="this.style.background='rgba(0,229,255,0.06)'">⟳ Refresh</button>
+            <button id="p2p-dnd-btn" onclick="_p2pToggleDND()" title="Do Not Disturb" style="padding:7px 10px;border-radius:9px;border:1px solid rgba(255,153,0,0.25);background:rgba(255,153,0,0.06);color:#ff9900;font-size:12px;cursor:pointer;transition:background 0.2s;white-space:nowrap;">🔕 DND</button>
+        </div>
+    </div>
+</div>
+
+<!-- Backdrop -->
+<div id="p2p-backdrop" onclick="toggleP2PSidebar()"></div>
+
+<!--Floating peer windows container -->
+<div id="p2p-windows"></div>
+
+<div class="header" style="flex-direction:column; justify-content:center; align-items:center; width:100%;">
+    <h1 class="cyber-hollow">Your Paradise</h1>
+    <div class="header2">
+    <div class="alias-bar">
+        <input type="text" id="alias-input" maxlength="32" placeholder="Your name…" autocomplete="off">
+        <button id="alias-btn" onclick="submitAlias()">Set</button>
+    </div>
+
+    <a href="https://github.com/Kartik-gawd/Your-Paradise" target="_blank" rel="noopener noreferrer" class="github-link" title="GitHub Repository">
+        <img src="/icon/github.png" alt="GitHub Logo" id = "github-icon"/>
+    </a>
+    <a id="admin-console-link" href="/admin" target="_blank" rel="noopener noreferrer"
+       onmouseover="this.style.background='rgba(0,229,255,0.18)'"
+       onmouseout="this.style.background='rgba(0,229,255,0.08)'"
+       title="To Admin Console">
+        ⚙ Admin
+    </a>
+</div>
+
+    <div class="breadcrumb" style="justify-content:center;">
+        {BREADCRUMB}
+    </div>
+</div>
+
+<div id="cb-container" class="cb-container">
+    <div class="cb-header" style="position:relative;">
+        <h3> Chats
+            <span id="online-users" style="font-size:0.6em; color:#aaa; margin-left:10px; font-weight:normal;">
+                <span id="online-preview"></span>
+                <button id="online-expand-btn" onclick="toggleOnlineDropdown()" title="Show all online users"
+                    style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:1.1em;padding:0 4px;vertical-align:middle;display:none;">&#9660;</button>
+            </span>
+        </h3>
+        <div id="online-dropdown" style="display:none; position:absolute; top:100%; left:0; z-index:200; min-width:180px; background:rgba(30,30,30,0.97); border:1px solid var(--glass-border); border-radius:12px; padding:10px 0; box-shadow:0 8px 32px rgba(0,0,0,0.5); backdrop-filter:blur(20px);">
+            <ul id="online-full-list" style="list-style:none; margin:0; padding:0 10px; display:flex; flex-direction:column; gap:6px; max-height:260px; overflow-y:auto;"></ul>
+        </div>
+        <button onclick="toggleClipboardFullscreen()" style = "font-size: 3vh;">&#9974; </button>
+    </div>
+    <div id="cb-messages" class="cb-messages"></div>
+    {CLIPBOARD_INPUT}
+</div>
+
+<div class="controls">
+    <input type="text" id="search" placeholder="Search files..." onkeyup="filterFiles()">
+
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <div class="view-toggle">
+            <button class="view-btn" onclick="toggleView('grid', event)" title="Grid View">&#9724;&#9724;</button>
+            <button class="view-btn" onclick="toggleView('list', event)" title="List View">&#8801;</button>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:4px; font-size:13px; color:#ccc;">
+            <label for="legacy-mode-toggle" style="display:flex; align-items:center; gap:5px; cursor:pointer; user-select:none; margin:0;">
+                <input type="checkbox" id="legacy-mode-toggle" onchange="toggleLegacyMode(this.checked)" style="cursor:pointer;">
+                Legacy Mode
+            </label>
+            <span id="legacy-mode-info" tabindex="0"
+                  style="position:relative; display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; border:1px solid #888; color:#888; font-size:10px; line-height:1; cursor:default; outline:none;"
+                  onmouseenter="document.getElementById('legacy-mode-tooltip').style.display='block'"
+                  onmouseleave="document.getElementById('legacy-mode-tooltip').style.display='none'"
+                  onfocus="document.getElementById('legacy-mode-tooltip').style.display='block'"
+                  onblur="document.getElementById('legacy-mode-tooltip').style.display='none'">i
+                <span id="legacy-mode-tooltip" style="display:none; position:absolute; bottom:150%; left:50%; transform:translateX(-50%); background:#222; color:#eee; padding:6px 8px; border-radius:6px; font-size:11px; white-space:nowrap; z-index:50; box-shadow:0 2px 6px rgba(0,0,0,0.4);">Turn this on if the current media player doesn't work on your device.</span>
+            </span>
+        </div>
+
+        <div class="sort-dropdown">
+            <button class="sort-btn">Sort By &#9662;</button>
+            <div class="sort-content">
+                <a href="?sort=name">Name</a>
+                <a href="?sort=size">Size</a>
+                <a href="?sort=date">Date Modified</a>
+                <a href="?sort=type">Type</a>
+            </div>
+        </div>
+
+        <a href="?action=zip" class="upload-btn" style="background:#4CAF50; color:white;">Download Folder</a>
+
+        {WRITE_BUTTONS}
+    </div>
+</div>
+
+<!-- ── Upload form (hidden by default)  -->
+<div id="upload-form" class="upload-form" style="display:none;">
+    <h3>Upload Files</h3>
+    <div class="drop-zone" id="drop-zone">
+        <div style="font-size:30px">&#128193;</div>
+        <div>Drag &amp; drop files here or click</div>
+        <input type="file" id="file-input" style="display:none" multiple>
+    </div>
+    <div id="file-list" style="margin-top:10px;"></div>
+    <div id="upload-progress" style="display:none; margin-top:15px;">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <div id="progress-text" style="text-align:center; font-size:12px; color:#aaa;">0%</div>
+    </div>
+    <div style="display:flex; gap:10px; margin-top:15px;">
+        <button id="start-upload-btn" class="upload-btn" onclick="startUpload()">Upload Files</button>
+        <button id="pause-resume-btn" class="pause-resume-btn" onclick="togglePause()" style="display:none;">⏸ Pause</button>
+        <button class="btn-cancel"  onclick="hideUploadForm()">Cancel</button>
+    </div>
+</div>
+
+<!-- ── File grid / list  -->
+<div class="grid" id="file-container">
+    <div class="list-header">
+        <div class="h-icon"></div>
+        <div class="h-name">Name</div>
+        <div class="h-type">Type</div>
+        <div class="h-size">Size</div>
+        <div class="h-date">Date Modified</div>
+    </div>
+
+    {FILE_ROWS}
+</div>  
+
+<!-- ── Folder context menu  -->
+<div id="folder-ctx-menu">
+    <div id="ctx-rename" class="ctx-item" onclick="ctxRename()">&#9998; Rename</div>
+    <div id="ctx-delete" class="ctx-item ctx-item-danger" onclick="ctxDelete()">&#128465; Delete</div>
+</div>
+
+<!-- ── Modal overlay s -->
+<div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)">
+    <button id="btn-prev" class="gallery-btn hidden" onclick="prevImage(event)">&#10094;</button>
+    <button id="btn-next" class="gallery-btn hidden" onclick="nextImage(event)">&#10095;</button>
+    <div class="modal">
+        <h3 id="modal-title">File Name</h3>
+        <div id="media-player" class="media-player hidden" style="flex-direction: column; width: 100%;"></div>
+        <div id="media-controls" class="hidden" style="margin:10px 0; text-align:left; background:rgba(0,0,0,0.25); padding:12px; border-radius:8px; display:flex; flex-direction:column; gap:12px; width: 100%; box-sizing: border-box;">
+            <div id="sub-wrap">
+                <label style="color:#aaa; font-size:12px; display:block; margin-bottom:6px;">Subtitles:
+                    <span tabindex="0" title="Internal/burnt-in subtitles can take some time to show up." style="display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; background:#555; color:#fff; font-size:10px; font-style:italic; font-family:serif; margin-left:6px; cursor:help; vertical-align:middle;">i</span>
+                </label>
+                <select id="sub-select" class="cv-select" onchange="changeSubtitle(this.value)"></select>
+            </div>
+        </div>
+        <p id="modal-description">Select an action</p>
+        <a id="btn-preview"  href="#" target="_blank" class="btn btn-preview">Preview in New Tab</a>
+        <a id="btn-download" href="#" download class="btn btn-download" onclick="stopMediaPlayback()">Download</a>
+        <button id="btn-delete" class="btn hidden" style="background:#ff0055; color:white;">Delete</button>
+        <button onclick="closeModal(null)" class="btn btn-cancel">Cancel</button>
+    </div>
+</div>
+
+<script>
+    // ── Gallery data injected by server 
+    const galleryImages = {GALLERY_JSON};
+    let currentGalleryIndex = -1;
+
+    // ── Folder creation 
+    function createFolder() {
+        const name = prompt("Enter new folder name:");
+        if (name && name.trim()) {
+            fetch(window.location.pathname + '?action=mkdir&name=' + encodeURIComponent(name.trim()), {
+                method: 'POST'
+            }).then(res => {
+                if (res.ok) location.reload();
+                else alert("Failed to create folder");
+            });
+        }
+    }
+
+    // ── Gallery navigation 
+    function updateGalleryView() {
+        if (currentGalleryIndex < 0 || currentGalleryIndex >= galleryImages.length) return;
+        const img         = galleryImages[currentGalleryIndex];
+        const mediaPlayer = document.getElementById('media-player');
+        mediaPlayer.innerHTML = `<img src="${img.url}" alt="${img.name}">`;
+        document.getElementById('modal-title').innerText = img.name;
+        const btnDownload = document.getElementById('btn-download');
+        btnDownload.href = img.url + '?action=download';
+        btnDownload.setAttribute('download', img.name);
+        document.getElementById('btn-preview').href = img.url;
+        document.getElementById('btn-prev').style.display = currentGalleryIndex > 0 ? 'block' : 'none';
+        document.getElementById('btn-next').style.display = currentGalleryIndex < galleryImages.length - 1 ? 'block' : 'none';
+    }
+
+    function nextImage(e) {
+        if (e) e.stopPropagation();
+        if (currentGalleryIndex < galleryImages.length - 1) { currentGalleryIndex++; updateGalleryView(); }
+    }
+
+    function prevImage(e) {
+        if (e) e.stopPropagation();
+        if (currentGalleryIndex > 0) { currentGalleryIndex--; updateGalleryView(); }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        const overlay = document.getElementById('modal-overlay');
+        if (overlay.style.display === 'flex') {
+            // Gallery Navigation
+            if (e.key === 'ArrowRight' && currentGalleryIndex !== -1) nextImage();
+            if (e.key === 'ArrowLeft'  && currentGalleryIndex !== -1) prevImage();
+            if (e.key === 'Escape') closeModal(null);
+
+            // PC & TV Video Controls
+            const video = document.getElementById('cv-video');
+            if (video && currentGalleryIndex === -1) {
+                switch(e.key) {
+                    case 'ArrowRight':
+                        video.currentTime += 10;
+                        break;
+                    case 'ArrowLeft':
+                        video.currentTime -= 10;
+                        break;
+                    case ' ': // Spacebar
+                        e.preventDefault(); 
+                        video.paused ? video.play() : video.pause();
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        video.volume = Math.min(1, video.volume + 0.1);
+                        showToast('🔊 ' + Math.round(video.volume * 100) + '%', 'info', 1000);
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        video.volume = Math.max(0, video.volume - 0.1);
+                        showToast('🔉 ' + Math.round(video.volume * 100) + '%', 'info', 1000);
+                        break;
+                    case 'f':
+                    case 'F':
+                        if (!document.fullscreenElement) {
+                            video.requestFullscreen().catch(()=>{});
+                        } else {
+                            document.exitFullscreen();
+                        }
+                        break;
+                }
+            }
+        }
+    });
+
+    function toggleClipboardFullscreen() {
+        document.getElementById('cb-container').classList.toggle('fullscreen');
+        document.body.classList.toggle('no-scroll');
+        scrollToBottom();
+    }
+
+    function scrollToBottom() {
+        const box = document.getElementById('cb-messages');
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function appendClipboardMessage(formattedText, isAdmin = false){
+        const msgList = document.getElementById('cb-messages');
+        if (!msgList) return;
+
+        const div = document.createElement('div');
+        div.className = 'cb-message'; 
+        if (isAdmin) div.style.color = '#4fc3f7';
+        div.textContent = formattedText;
+        
+        div.title = "Click to copy";
+        div.style.cursor = "pointer"; 
+        
+        //Click to Copy
+        div.onclick = () => {
+            const textToCopy = formattedText.includes(']: ') 
+                ? formattedText.substring(formattedText.indexOf(']: ') + 3) 
+                : formattedText;
+            
+            div.style.background = 'rgba(187, 134, 252, 0.3)';
+            setTimeout(() => { div.style.background = ''; }, 300);
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => { showToast('Copied to clipboard!', 'success', 1500); })
+                    .catch(() => executeFallbackCopy(textToCopy));
+            } else {
+                executeFallbackCopy(textToCopy);
+            }
+        };
+
+        function executeFallbackCopy(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            
+            Object.assign(textArea.style, {
+                position: 'fixed',
+                left: '-999999px',
+                top: '0'
+            });
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('Copied to clipboard!', 'success', 1500);
+                } else {
+                    showToast('Copy command failed', 'error');
+                }
+            } catch (err) {
+                console.error('Fallback copy engine error:', err);
+                showToast('Copy failed', 'error');
+            } finally {
+                document.body.removeChild(textArea);
+            }
+        }
+
+        msgList.appendChild(div);
+        msgList.scrollTop = msgList.scrollHeight;
+    }
+
+    function renderClipboardMessages(messages){
+        const msgList=document.getElementById('cb-messages')
+        if(!msgList) return;
+        msgList.innerHTML = '';
+        messages.forEach(m => {
+            if (typeof m === 'object' && m !== null) {
+                appendClipboardMessage(m.formatted, m.is_admin);
+            } else {
+                appendClipboardMessage(m, false);
+            }
+        });
+    }
+
+    async function sendClipboard() {
+        const input = document.getElementById('cb-input');
+        if (!input) return;
+        const text = input.value.trim();
+        if (!text) return;
+        try {
+            const res = await fetch('/clipboard', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text })
+            });
+            if (res.status === 403) {
+                let errMsg = 'Message blocked by server.';
+                try {
+                    const body = await res.json();
+                    if (body.error) errMsg = body.error;
+                } catch {}
+                showToast('🔒 ' + errMsg, 'error', 5000);
+                return;
+            }
+            input.value = '';
+        } 
+        catch(e) { 
+            alert('Failed to send message'); 
+        }
+    }
+
+    const cbInput = document.getElementById('cb-input');
+    if (cbInput) {
+        cbInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendClipboard(); }
+        });
+    }
+
+    let sse = null;
+
+    window.addEventListener('beforeunload', () => {
+        if (window.sse) window.sse.close();
+    });
+    
+    function initSSE() {
+        sse = new EventSource('/events');
+        window.sse = sse;
+
+        sse.addEventListener('open', function() {
+            var dot = document.getElementById('sse-status-dot');
+            if (dot) dot.classList.add('online');
+        });
+
+        sse.addEventListener('error', function() {
+            var dot = document.getElementById('sse-status-dot');
+            if (dot) dot.classList.remove('online');
+        });
+
+
+        // on connect renders cb
+        sse.addEventListener('init', (e) => {
+            const data = JSON.parse(e.data);
+            renderClipboardMessages(data.messages);
+            if (data.your_ip)  window._myIp    = data.your_ip;
+            if (data.sse_uuid) window._sseUuid = data.sse_uuid;
+
+            // Auto-connect to P2P — jitter avoids a thundering herd of
+            // /p2p/register calls when many tabs load at once.
+            const jitter = 50 + Math.random() * 450;
+            setTimeout(() => { if (!_p2pOnline) p2pConnect(); }, jitter);
+        });
+
+        // new msg
+        sse.addEventListener('clipboard_message', (e) => {
+            const msg = JSON.parse(e.data);
+            appendClipboardMessage(msg.formatted, msg.is_admin);
+        });
+        
+        // only refresh if theres changes and others are on same dir
+        sse.addEventListener('refresh_files', (e) => {
+            const data = JSON.parse(e.data);
+            if (data.path === currentPath || data.path === null) {
+                silentlyRefreshFileGrid();
+            }
+        });
+
+        // someone joined or left
+        sse.addEventListener('presence_update', (e) => {
+            const data = JSON.parse(e.data);
+            if (data.your_ip)    window._myIp      = data.your_ip;
+            if (data.server_ips) window._serverIps  = data.server_ips;
+            renderOnlineRadar(data.online_ips, data.online_count, data.aliases || {});
+        });
+
+        // Peer registry changed — refresh sidebar list if open
+        sse.addEventListener('p2p_peers_update', (e) => {
+            if (_p2pOnline) _p2pRefreshPeers();
+        });
+
+        // Live subtitle extraction: a single internal subtitle finished
+        sse.addEventListener('subtitle_ready', (e) => {
+            const data = JSON.parse(e.data);
+            if (data.video !== window._currentVideoKey) return;
+            addExtractedSubtitleOption(data.sub_url);
+        });
+
+        // Live subtitle extraction: all streams for this video are done
+        sse.addEventListener('subtitle_extraction_done', (e) => {
+            const data = JSON.parse(e.data);
+            if (data.video !== window._currentVideoKey) return;
+            removeLoadingSubtitleOption();
+        });
+
+        // Broadcast lifecycle signals
+        sse.addEventListener('p2p_signal', () => {}); // handled by dispatcher
+
+        // Load persisted history as soon as SSE UUID is established
+        sse.addEventListener('init', () => { _p2pLoadHistory(); });
+
+        // Server now fires upload_start / upload_complete exactly once per
+        // batch (guarded by is_first_file / is_last_file flags), so the
+        // listeners are simple pass-throughs.
+        sse.addEventListener('upload_start', (e) => {
+            const data  = JSON.parse(e.data);
+            const count = data.file_count || 1;
+            const label = count === 1 ? '1 file' : `${count} files`;
+            showToast(`📥 ${data.user} is uploading ${label}`, 'info');
+        });
+
+        sse.addEventListener('upload_complete', (e) => {
+            const data  = JSON.parse(e.data);
+            const count = data.file_count || 1;
+            const label = count === 1 ? '1 file' : `${count} files`;
+            showToast(`✅ ${data.user} uploaded ${label}`, 'success');
+        });
+
+        sse.addEventListener('upload_complete', (e) => {
+            const data  = JSON.parse(e.data);
+            const key   = `${data.user}|${data.path}`;
+            const total = data.file_count || 1;
+
+            _uploadCompleteCnt[key] = (_uploadCompleteCnt[key] || 0) + 1;
+            if (_uploadCompleteCnt[key] < total) return;  // batch not done yet
+
+            // All files in the batch finished — show once and reset.
+            delete _uploadCompleteCnt[key];
+            _uploadStartSeen.delete(key);   // allow next batch to toast again
+
+            const label = total === 1 ? '1 file' : `${total} files`;
+            showToast(`✅ ${data.user} uploaded ${label}`, 'success');
+        });
+
+        // Ban notification — server sends this when a client's SSE queue
+        // receives the sentinel. The page reload hits check_access() which
+        // now returns 403 for banned IPs.
+        sse.addEventListener('banned', (e) => {
+            showToast('🚫 You have been banned by the administrator.', 'error', 8000);
+            setTimeout(() => location.reload(), 2500);
+        });
+
+        // Kill switch — admin cleared the allowlist. Force every non-exempt
+        // client to reload; check_access() now returns 403 (lockdown screen)
+        // for anyone who isn't localhost/admin/server.
+        sse.addEventListener('admin_event', (e) => {
+            const data = JSON.parse(e.data);
+            if (data.type === 'lockdown') {
+                showToast('🔒 ' + (data.message || 'Server has entered lockdown mode.'), 'error', 8000);
+                setTimeout(() => location.reload(), 2000);
+            } else if (data.type === 'lockdown_off') {
+                showToast('🔓 ' + (data.message || 'Lockdown lifted.'), 'success', 5000);
+            }
+        });
+
+        // Clipboard wipe — clear the message list and show a notice.
+        sse.addEventListener('clipboard_wipe', (e) => {
+            const msgList = document.getElementById('cb-messages');
+            if (msgList) msgList.innerHTML = '';
+            showToast('🧹 Admin cleared the chats', 'warning', 5000);
+        });
+    
+
+        sse.addEventListener('admin_cancel_upload', (e) => {
+            const data = JSON.parse(e.data);
+
+            // Abort if this client owns the cancelled file.
+            const isMyUpload = selectedFiles && selectedFiles.some(f => f.name === data.filename);
+            if (isMyUpload) {
+                showToast(`🚫 Admin rejected your upload: ${data.filename}`, 'error', 8000);
+
+                window._cancelledUploads = window._cancelledUploads || new Set();
+                window._cancelledUploads.add(data.filename);
+
+                if (_activeUploadXhr) {
+                    _activeUploadXhr.abort();
+                }
+            }
+        });
+
+        // Fired when admin uses "Cooldown" — cancel + 5-min upload block.
+        sse.addEventListener('admin_upload_cooldown', (e) => {
+            const data = JSON.parse(e.data);
+            const myIp = window._myIp || null;
+
+            // Only show the cooldown toast to the affected IP.
+            if (myIp && myIp !== data.ip) return;
+
+            const mins = Math.floor(data.cooldown_secs / 60);
+            const secs = data.cooldown_secs % 60;
+            showToast(
+                `⏱ Admin cancelled your upload of "${data.filename}" and placed you on a ${mins}m ${secs}s upload cooldown.`,
+                'error', 12000
+            );
+
+            // Also flag the filename so the chunk loop stops immediately.
+            window._cancelledUploads = window._cancelledUploads || new Set();
+            window._cancelledUploads.add(data.filename);
+
+            if (_activeUploadXhr) {
+                _activeUploadXhr.abort();
+            }
+        });
+
+        _p2pInitDispatcher();
+    }
+    const currentPath = '{CURRENT_PATH}'
+
+    async function silentlyRefreshFileGrid() {
+        try {
+            const res = await fetch(window.location.pathname + '?_sse_refresh=1');
+            if (!res.ok) return;
+            const text = await res.text();
+
+            const parser  = new DOMParser();
+            const newDoc  = parser.parseFromString(text, 'text/html');
+            const newGrid = newDoc.getElementById('file-container');
+            const curGrid = document.getElementById('file-container');
+
+            if (newGrid && curGrid) {
+                curGrid.innerHTML = newGrid.innerHTML;
+            }
+        } catch (e) {
+            console.warn('refresh failed: ' + e);
+        }
+    }
+
+    let _latestOnlineIps = [];
+    let _latestAliases   = {};
+
+    function renderOnlineRadar(onlineIps, count, aliases) {
+        _latestOnlineIps = onlineIps || [];
+        _latestAliases   = aliases   || {};
+
+        const MAX_PREVIEW = 3;
+        const myIp        = window._myIp || null;
+
+        const previewEl = document.getElementById('online-preview');
+        const expandBtn = document.getElementById('online-expand-btn');
+
+        if (previewEl) {
+            const previewNames = _latestOnlineIps.slice(0, MAX_PREVIEW).map(ip => {
+                const name     = _latestAliases[ip] || ip;
+                const isMe     = (ip === myIp);
+                // FIX: Removed the (server) logic from the header preview
+                return isMe ? `<strong>${name}</strong>` : name;
+            });
+                
+            const more = count > MAX_PREVIEW ? ` +${count - MAX_PREVIEW}` : '';
+            previewEl.innerHTML = `&#128994; ${count} Online | ${previewNames.join(', ')}${more}`;
+        }
+
+        if (expandBtn) {
+            expandBtn.style.display = count > 0 ? 'inline' : 'none';
+            const isOpen = document.getElementById('online-dropdown').style.display !== 'none';
+            expandBtn.innerHTML = isOpen ? '&#9650;' : '&#9660;';
+        }
+
+        _renderFullOnlineList();
+    }
+
+    function _renderFullOnlineList() {
+        const listEl = document.getElementById('online-full-list');
+        if (!listEl) return;
+        const myIp = window._myIp || null;
+        const serverIps = window._serverIps || []; // FIX: Added missing variable
+        
+        listEl.innerHTML = '';
+        _latestOnlineIps.forEach(ip => {
+            const li   = document.createElement('li');
+            const name = _latestAliases[ip] || ip;
+            const isMe = (ip === myIp);
+            const isSrv = serverIps.includes(ip);
+            
+            li.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 6px;border-radius:8px;font-size:13px;';
+            if (isMe) li.style.background = 'rgba(187,134,252,0.12)';
+            if (isSrv) li.style.background = 'rgba(0,229,255,0.07)';
+            
+            // FIX: Changed semicolon to a plus sign to properly concatenate the (server) tag
+            li.innerHTML =
+                `<span style="width:8px;height:8px;border-radius:50%;background:#4caf50;flex-shrink:0;"></span>` +
+                `<span style="flex:1;word-break:break-all;">${escapeHtml(name)}</span>` +
+                (isMe ? `<span style="color:var(--accent);font-size:11px;white-space:nowrap;">&larr;(you)</span>` : '') +
+                (isSrv ? ` <span style="color:var(--neon-cyan);font-size:11px;white-space:nowrap;">(server)</span>` : '');
+                
+            listEl.appendChild(li);
+        });
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function toggleOnlineDropdown() {
+        const dd  = document.getElementById('online-dropdown');
+        const btn = document.getElementById('online-expand-btn');
+        const isOpen = dd.style.display !== 'none';
+        dd.style.display = isOpen ? 'none' : 'block';
+        if (btn) btn.innerHTML = isOpen ? '&#9660;' : '&#9650;';
+        if (!isOpen) _renderFullOnlineList();
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        const dd  = document.getElementById('online-dropdown');
+        const hdr = document.querySelector('.cb-header');
+        if (dd && dd.style.display !== 'none' && hdr && !hdr.contains(e.target)) {
+            dd.style.display = 'none';
+            const btn = document.getElementById('online-expand-btn');
+            if (btn) btn.innerHTML = '&#9660;';
+        }
+    });
+
+    let _currentAlias = null;
+    async function submitAlias(silent = false) { 
+        const input = document.getElementById('alias-input');
+        if (!input) return;
+        const alias = input.value.trim();
+
+        var effectiveCurrent = (_currentAlias !== null && _currentAlias !== undefined) ? _currentAlias : '';
+
+        if (alias === effectiveCurrent) return;
+        try {
+            await fetch('/alias', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ alias })
+            });
+            input.blur();
+            _currentAlias = alias || null;
+            localStorage.setItem('userAlias', alias);
+
+            if (_p2pOnline) p2pConnect();
+
+            if (!silent) {
+                if (alias) {
+                    showToast(`Name set to "${alias}"`, 'success', 2000);
+                } else {
+                    showToast('Name reset', 'info', 2000);
+                }
+            }
+        } 
+        catch(e) {
+            if (!silent) showToast('Failed to set Name', 'error');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const aliasInput = document.getElementById('alias-input');
+        if (aliasInput) {
+            aliasInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') { e.preventDefault(); submitAlias(); }
+            });
+        }
+        // Auto-restore alias from previous session
+        const savedAlias = localStorage.getItem('userAlias');
+        if (savedAlias !== null && savedAlias !== '') {
+            const input = document.getElementById('alias-input');
+            if (input) input.value = savedAlias;
+            submitAlias(true);   // re-register silently with the backend
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const sortBtn     = document.querySelector('.sort-btn');
+        const sortContent = document.querySelector('.sort-content');
+        if (sortBtn && sortContent) {
+            sortBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const isOpen = sortContent.classList.contains('open');
+                sortContent.classList.toggle('open', !isOpen);
+            });
+            // Use mousedown instead of click so the dismiss fires before the
+            // button's click handler, preventing the open/close race.
+            document.addEventListener('mousedown', function (e) {
+                if (!sortContent.contains(e.target) && e.target !== sortBtn) {
+                    sortContent.classList.remove('open');
+                }
+            });
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', initSSE);
+
+    function stopMediaPlayback() {
+        const mp    = document.getElementById('media-player');
+        const video = mp.querySelector('video');
+        const audio = mp.querySelector('audio');
+        if (video) video.pause();
+        if (audio) audio.pause();
+    }
+
+    // Toast audio 
+    const _toastAudio = document.createElement('audio');
+    _toastAudio.src = '/effects/toast1.mp3';
+    _toastAudio.preload = 'auto';
+    _toastAudio.volume = 0.75;
+    document.body.appendChild(_toastAudio);
+
+    const TOAST_MAX_VISIBLE  = 4;
+    const TOAST_COOLDOWN_MS  = 2000;
+    const toastLastShown    = {}; 
+    function showToast(message, type= 'info', durationMs = 4000){
+        const now = Date.now();
+        if (toastLastShown[type] && 
+            (now - toastLastShown[type]) < TOAST_COOLDOWN_MS) return;
+
+        toastLastShown[type] = now;
+        
+        let container = document.getElementById('toast-container');
+        if(!container){
+            container = document.createElement('div');
+            container.id = 'toast-container';
+
+            Object.assign(container.style, {
+                position: 'fixed',
+                top: '20px',
+                right:'20px',
+                zIndex: '9999',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+            });
+            document.body.appendChild(container)
+        }
+        //limit on screen
+        while (container.children.length >= TOAST_MAX_VISIBLE) {
+            container.removeChild(container.firstChild);
+        }
+
+        const toast = document.createElement('div'); 
+        toast.className = 'toast toast-${type}';
+        toast.textContent = message;
+
+        // cp styling 
+        const colors = {
+            info:    { border: '#00e5ff', glow: 'rgba(0,229,255,0.3)' },
+            success: { border: '#39ff14', glow: 'rgba(57,255,20,0.3)' },
+            warning: { border: '#ff9900', glow: 'rgba(255,153,0,0.3)' },
+            error:   { border: '#ff0055', glow: 'rgba(255,0,85,0.3)' }
+        };
+
+        const c = colors[type] || colors.info;
+
+        Object.assign(toast.style, {
+            background: 'rgba(18, 18, 18, 0.95)',
+            border: `1px solid ${c.border}`,
+            boxShadow: `0 0 14px ${c.glow}`,
+            color: '#e0e0e0',
+            padding: '12px 20px',
+            borderRadius: '8px',
+            fontSize: '14px',
+            maxWidth: '360px',
+
+            backdropFilter: 'blur(8px)',
+            opacity: '0',
+            transform: 'translateX(20px)',
+            transition: 'opacity 0.25s ease, transform 0.25s ease',
+            cursor: 'pointer',
+        });
+
+        // Play toast sound
+        if (now - (_toastAudio._lastPlay || 0) >= 2000) {
+            try { 
+                _toastAudio.currentTime = 0; 
+                _toastAudio.play().catch(() => {}); 
+                _toastAudio._lastPlay = now;
+            } catch {}
+        }
+
+        // dismiss
+        toast.addEventListener('click', () => dismissToast(toast));
+        container.appendChild(toast);
+
+        requestAnimationFrame(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(0)';
+        });
+
+        //auto dismiss
+        setTimeout(() => dismissToast(toast), durationMs);
+    }
+
+    function dismissToast(toast){
+        toast.style.opacity = '0';
+        toast.style.transform = 'transformX(20px)';
+        setTimeout(() => toast.remove(), 300);
+    }
+
+    function srtToVtt(srtText) {
+        var body = srtText.replace(/\r+/g, '')
+            .replace(/^\uFEFF/, '')
+            .replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, '$1.$2');
+        return 'WEBVTT\n\n' + body;
+    }
+
+    function applyTrackToVideo(video, vttSrc) {
+        var tracks = video.querySelectorAll('track');
+        for (var i = 0; i < tracks.length; i++) tracks[i].parentNode.removeChild(tracks[i]);
+        if (!vttSrc) return;
+        var track = document.createElement('track');
+        track.kind    = 'subtitles';
+        track.src     = vttSrc;
+        track.default = true;
+        track.addEventListener('load', function() {
+            if (track.track) track.track.mode = 'showing';
+        });
+        video.appendChild(track);
+        if (video.textTracks && video.textTracks.length > 0) {
+            video.textTracks[video.textTracks.length - 1].mode = 'showing';
+        }
+    }
+
+    function changeSubtitle(trackSrc) {
+        var video = document.querySelector('#media-player video');
+        if (!video) return;
+        if (window._subtitleBlobUrl) {
+            URL.revokeObjectURL(window._subtitleBlobUrl);
+            window._subtitleBlobUrl = null;
+        }
+        if (!trackSrc) {
+            applyTrackToVideo(video, null);
+            return;
+        }
+        var isSrt = /\.srt(\?.*)?$/i.test(trackSrc);
+        if (!isSrt) {
+            applyTrackToVideo(video, trackSrc);
+            return;
+        }
+        fetch(trackSrc)
+            .then(function(r) { return r.text(); })
+            .then(function(srtText) {
+                var vtt = srtToVtt(srtText);
+                var blob = new Blob([vtt], { type: 'text/vtt' });
+                var blobUrl = URL.createObjectURL(blob);
+                window._subtitleBlobUrl = blobUrl;
+                applyTrackToVideo(video, blobUrl);
+            })
+            .catch(function() { applyTrackToVideo(video, null); });
+    }
+
+    // ── Subtitle dropdown live updates (extraction queue) 
+    function cleanSubLabel(path) {
+        const file = path.split('/').pop();
+        const videoStem = (window._currentVideoFilename || '').replace(/\.[^.]+$/, '');
+        let label = file;
+        if (videoStem && label.startsWith(videoStem)) {
+            label = label.substring(videoStem.length);
+        }
+        return label
+            .replace(/\.[^.]+$/, '')
+            .replace(/^[\.\-_]+/, '')
+            .replace(/[\.\-_]/g, ' ')
+            .trim() || "Default";
+    }
+
+    function addExtractedSubtitleOption(subUrl) {
+        const subSelect = document.getElementById('sub-select');
+        if (!subSelect || subSelect.querySelector(`option[value="${subUrl}"]`)) return;
+        const opt = document.createElement('option');
+        opt.value = subUrl;
+        opt.textContent = '(internal) ' + cleanSubLabel(subUrl);
+        const loadingOpt = subSelect.querySelector('option[data-loading="1"]');
+        if (loadingOpt) {
+            subSelect.insertBefore(opt, loadingOpt);
+        } else {
+            subSelect.appendChild(opt);
+        }
+    }
+
+    function removeLoadingSubtitleOption() {
+        const subSelect = document.getElementById('sub-select');
+        const loadingOpt = subSelect && subSelect.querySelector('option[data-loading="1"]');
+        if (loadingOpt) loadingOpt.remove();
+    }
+
+    function cancelExtraction(videoKey) {
+        if (!videoKey) return;
+        try {
+            fetch('/cancel_extraction?video=' + encodeURIComponent(videoKey)).catch(() => {});
+        } catch (e) {}
+    }
+
+    const isAdmin = (typeof {IS_ADMIN} !== 'undefined') ? {IS_ADMIN} : false;
+
+    if (isAdmin) {
+        const _adminLink = document.getElementById('admin-console-link');
+        if (_adminLink) _adminLink.style.display = 'inline-flex';
+    }
+    
+    const _userPerms = (typeof {USER_PERMISSIONS} !== 'undefined') ? {USER_PERMISSIONS} : {"can_delete": false, "can_rename": false};
+
+    // ── Folder context menu logic 
+    let _ctxTarget = null;   // { name, url, element }
+
+    function _showCtxMenu(x, y, folderName, folderUrl, element) {
+        _ctxTarget = { name: folderName, url: folderUrl, element };
+
+        const menu      = document.getElementById('folder-ctx-menu');
+        const renameEl  = document.getElementById('ctx-rename');
+        const deleteEl  = document.getElementById('ctx-delete');
+
+        // Show/hide items according to this client's permissions.
+        renameEl.style.display = _userPerms.can_rename ? 'block' : 'none';
+        deleteEl.style.display = _userPerms.can_delete ? 'block' : 'none';
+
+        // If neither action is permitted, nothing to show.
+        if (!_userPerms.can_rename && !_userPerms.can_delete) return;
+
+        menu.style.display = 'block';
+
+        // Keep the menu inside the viewport.
+        const vw = window.innerWidth, vh = window.innerHeight;
+        const mw = 180, mh = 90;
+        menu.style.left = (x + mw > vw ? vw - mw - 8 : x) + 'px';
+        menu.style.top  = (y + mh > vh ? vh - mh - 8 : y) + 'px';
+    }
+
+    function _hideCtxMenu() {
+        document.getElementById('folder-ctx-menu').style.display = 'none';
+        _ctxTarget = null;
+    }
+
+    // Dismiss on any outside click.
+    document.addEventListener('click', function (e) {
+        const menu = document.getElementById('folder-ctx-menu');
+        if (menu && menu.style.display !== 'none' && !menu.contains(e.target)) {
+            _hideCtxMenu();
+        }
+    });
+
+    // Dismiss on scroll so it doesn't float away.
+    document.addEventListener('scroll', _hideCtxMenu, true);
+
+    async function ctxRename() {
+        if (!_ctxTarget) return;
+    
+        const { name, url, element } = _ctxTarget;
+        _hideCtxMenu();
+        const newName = prompt(`Rename "${name}" to:`, name);
+        if (!newName || !newName.trim() || newName.trim() === name) return;
+        const trimmed = newName.trim();
+        try {
+            // POST to the *parent* directory path with ?action=rename.
+            // url is the folder's own pathname (e.g. /SubDir/MyFolder/),
+            // so the parent is one level up.
+            const parentPath = url.replace(/\/[^/]+\/$/, '/');
+            const res = await fetch(parentPath + '?action=rename', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ old_name: name, new_name: trimmed })
+            });
+            if (res.ok) {
+                showToast(`Renamed to "${trimmed}"`, 'success', 2500);
+                if (element) {
+                    // Rewrite the link to the new folder name.
+                    const newPath = parentPath + encodeURIComponent(trimmed) + '/';
+                    element.href  = newPath;
+                    element.setAttribute('data-name', trimmed.toLowerCase());
+                    const nameSpan = element.querySelector('.name');
+                    if (nameSpan) nameSpan.textContent = trimmed;
+                }
+            } else if (res.status === 409) {
+                showToast('A folder with that name already exists.', 'error', 4000);
+            } else {
+                const msg = await res.text().catch(() => res.statusText);
+                showToast('Rename failed: ' + msg, 'error');
+            }
+        } catch (e) {
+            showToast('Rename failed: network error', 'error');
+        }
+    }
+
+    async function ctxDelete() {
+        if (!_ctxTarget) return;
+        
+        const { name, url, element } = _ctxTarget;
+        _hideCtxMenu();
+        if (!confirm(`Permanently delete folder "${name}" and ALL its contents?\nThis cannot be undone.`)) return;
+        try {
+            // url is the folder's own pathname — POST directly to it.
+            const res = await fetch(url + '?action=delete', { method: 'POST' });
+            if (res.ok) {
+                showToast(`"${name}" deleted.`, 'success', 2000);
+                if (element) element.remove();
+            } else if (res.status === 403) {
+                showToast('Only the server host can delete folders.', 'error', 4000);
+            } else {
+                const msg = await res.text().catch(() => res.statusText);
+                showToast('Delete failed: ' + msg, 'error');
+            }
+        } catch (e) {
+            showToast('Delete failed: network error', 'error');
+        }
+    }
+
+    // ── Attach context menu listeners to all folder items 
+    (function attachFolderCtxListeners() {
+        const container = document.getElementById('file-container');
+        if (!container) return;
+
+        let _longPressTimer = null;
+
+        function _folderInfoFromItem(item) {
+            // .name span holds the exact filesystem name as rendered by the server.
+            var _nameEl = item.querySelector('.name');
+            var realName = (_nameEl && _nameEl.textContent) ? _nameEl.textContent.trim()
+                          : decodeURIComponent(new URL(item.href).pathname.split('/').filter(Boolean).pop() || '');
+            // Use the pathname only (no host/port) so fetch() targets the right route.
+            const folderPath = new URL(item.href).pathname;
+            return { realName, folderPath };
+        }
+
+        container.addEventListener('contextmenu', function (e) {
+            const item = e.target.closest('a.item[href]');
+            if (!item) return;
+            // Folders: their href pathname ends with /
+            const pathname = new URL(item.href).pathname;
+            if (!pathname.endsWith('/') || pathname === '/') return;
+            e.preventDefault();
+            const { realName, folderPath } = _folderInfoFromItem(item);
+            _showCtxMenu(e.clientX, e.clientY, realName, folderPath, item);
+        });
+
+        container.addEventListener('touchstart', function (e) {
+            const item = e.target.closest('a.item[href]');
+            if (!item) return;
+            const pathname = new URL(item.href).pathname;
+            if (!pathname.endsWith('/') || pathname === '/') return;
+            _longPressTimer = setTimeout(function () {
+                const t = e.touches[0];
+                const { realName, folderPath } = _folderInfoFromItem(item);
+                _showCtxMenu(t.clientX, t.clientY, realName, folderPath, item);
+            }, 600);
+        }, { passive: true });
+
+        container.addEventListener('touchend',  () => clearTimeout(_longPressTimer));
+        container.addEventListener('touchmove', () => clearTimeout(_longPressTimer));
+    })();
+
+    async function deleteFile(url) {
+        if (!confirm(`Permanently delete "${decodeURIComponent(url.split('/').pop())}"?\nThis cannot be undone.`)) return;
+        try {
+            const res = await fetch(url + '?action=delete', { method: 'POST' });
+            if (res.ok) {
+                closeModal(null);
+                showToast('File deleted.', 'success', 2000);
+                // Remove the DOM element immediately — no reload flash or ghost state.
+                const encodedName = url.split('/').pop();
+                const decodedName = decodeURIComponent(encodedName).toLowerCase();
+                const container   = document.getElementById('file-container');
+                if (container) {
+                    const items = container.querySelectorAll('.item[data-name]');
+                    items.forEach(el => {
+                        if (el.getAttribute('data-name') === decodedName) el.remove();
+                    });
+                }
+            } else if (res.status === 423) {
+                showToast('Cannot delete: file is currently open or streaming. Close the preview and try again.', 'error', 6000);
+            } else {
+                showToast('Delete failed: ' + res.statusText, 'error');
+            }
+        } catch(e) {
+            showToast('Delete failed: network error', 'error');
+        }
+    }
+
+    async function showModal(url, filename, canPreview, mediaType, subtitleUrl, allSubsEncoded) {
+        const overlay     = document.getElementById('modal-overlay');
+        const title       = document.getElementById('modal-title');
+        const btnPreview  = document.getElementById('btn-preview');
+        const btnDownload = document.getElementById('btn-download');
+        const btnDelete   = document.getElementById('btn-delete');
+        const mediaPlayer = document.getElementById('media-player');
+        const description = document.getElementById('modal-description');
+
+        if (window._currentVideoKey && window._currentVideoKey !== url) {
+            cancelExtraction(window._currentVideoKey);
+            window._currentVideoKey = null;
+        }
+
+        currentGalleryIndex = -1;
+        document.getElementById('btn-prev').classList.add('hidden');
+        document.getElementById('btn-next').classList.add('hidden');
+
+        title.innerText = filename;
+        btnDownload.href = url + '?action=download';
+        btnDownload.setAttribute('download', filename);
+        btnPreview.href = url;
+        btnPreview.classList.toggle('hidden', !canPreview);
+        
+        if (btnDelete) {
+            if (isAdmin && !url.endsWith('/')) {
+                btnDelete.classList.remove('hidden');
+                btnDelete.onclick = () => deleteFile(url);
+            } else {
+                btnDelete.classList.add('hidden');
+                btnDelete.onclick = null;
+            }
+        }
+
+        mediaPlayer.innerHTML = '';
+        mediaPlayer.classList.add('hidden');
+        const mediaControls = document.getElementById('media-controls') || document.getElementById('sub-control');
+        if (mediaControls) mediaControls.classList.add('hidden');
+    
+        description.classList.remove('hidden');
+
+        if (mediaType) {
+            description.classList.add('hidden');
+            mediaPlayer.classList.remove('hidden');
+
+            if (mediaType === 'video') {
+                const baseUrl = url;
+            
+                if (mediaControls) mediaControls.classList.remove('hidden');
+
+                window._currentVideoKey      = baseUrl;
+                window._currentVideoFilename = filename;
+
+                const subSelect = document.getElementById('sub-select');
+                subSelect.innerHTML = '<option value="">None</option>';
+                if (allSubsEncoded) {
+                    const allSubs = JSON.parse(decodeURIComponent(allSubsEncoded));
+                    allSubs.forEach(s => {
+                        const opt = document.createElement('option');
+                        opt.value = s;
+                        opt.textContent = cleanSubLabel(s);
+                        if (s === decodeURIComponent(subtitleUrl || '')) opt.selected = true;
+                        subSelect.appendChild(opt);
+                    });
+                }
+                if (legacyModeEnabled) {
+                    //  Legacy Mode: simple native <video> player (ES5-style) 
+                    var legacyVideoHtml = '<video id="cv-video" controls autoplay style="width:100%;max-height:70vh;display:block;background:#000;">';
+                    legacyVideoHtml += '<source src="' + baseUrl + '">';
+                    if (subtitleUrl) {
+                        legacyVideoHtml += '<track id="dynamic-sub-track" kind="subtitles" src="' + subtitleUrl + '" default>';
+                    }
+                    legacyVideoHtml += 'Your browser does not support the video tag.</video>';
+                    mediaPlayer.innerHTML = legacyVideoHtml;
+
+                    if (allSubsEncoded) {
+                        var legacyAllSubs = JSON.parse(decodeURIComponent(allSubsEncoded));
+                        for (var li = 0; li < legacyAllSubs.length; li++) {
+                            var ls = legacyAllSubs[li];
+                            if (!subSelect.querySelector('option[value="' + ls + '"]')) {
+                                var lopt = document.createElement('option');
+                                lopt.value = ls;
+                                lopt.textContent = cleanSubLabel(ls);
+                                if (subtitleUrl && ls === decodeURIComponent(subtitleUrl || '')) {
+                                    lopt.selected = true;
+                                }
+                                subSelect.appendChild(lopt);
+                            }
+                        }
+                    }
+
+                    // checks the existing central subtitle cache 
+                    fetch('/cached_subs?file=' + encodeURIComponent(baseUrl))
+                        .then(r => r.ok ? r.json() : null)
+                        .then(meta => {
+                            if (!meta || !meta.extracted_subs) return;
+                            meta.extracted_subs.forEach(s => {
+                                if (subSelect.querySelector('option[value="' + s + '"]')) return;
+                                var opt = document.createElement('option');
+                                opt.value = s;
+                                opt.textContent = '(internal) ' + cleanSubLabel(s);
+                                subSelect.appendChild(opt);
+                            });
+                        }).catch(() => {});
+                } else {
+                // Build video element
+                mediaPlayer.innerHTML = `<video id="cv-video" controls preload="none" style="width:100%;max-height:70vh;display:block;background:#000; outline:none;"></video>`;
+                const cvVideo = document.getElementById('cv-video');
+
+                cvVideo.src = baseUrl;
+
+                if (subtitleUrl) changeSubtitle(subtitleUrl);
+
+                //  Gesture Controls (Mobile & Mouse) 
+                let lastTap = 0;
+
+                cvVideo.addEventListener('dblclick', function(e) {
+                    const rect = cvVideo.getBoundingClientRect();
+                    if ((e.clientX - rect.left) < rect.width / 2) {
+                        cvVideo.currentTime -= 10;
+                    } else {
+                        cvVideo.currentTime += 10;
+                    }
+                });
+
+                cvVideo.addEventListener('touchstart', function(e) {
+                    const currentTime = new Date().getTime();
+                    const tapLength = currentTime - lastTap;
+                    
+                    if (tapLength < 300 && tapLength > 0) {
+                        const rect = cvVideo.getBoundingClientRect();
+                        if ((e.touches[0].clientX - rect.left) < rect.width / 2) {
+                            cvVideo.currentTime -= 10;
+                        } else {
+                            cvVideo.currentTime += 10;
+                        }
+                        e.preventDefault(); 
+                    }
+                    lastTap = currentTime;
+                }, { passive: false });
+
+           
+                const loadingSubOpt = document.createElement('option');
+                loadingSubOpt.value = '';
+                loadingSubOpt.disabled = true;
+                loadingSubOpt.dataset.loading = '1';
+                loadingSubOpt.textContent = 'Loading subtitles...';
+                subSelect.appendChild(loadingSubOpt);
+
+                const sseUuidParam = window._sseUuid ? '&sse_uuid=' + encodeURIComponent(window._sseUuid) : '';
+                fetch('/video_meta?file=' + encodeURIComponent(baseUrl) + sseUuidParam)
+                    .then(r => r.ok ? r.json() : null)
+                    .then(meta => {
+                        if (!meta) { removeLoadingSubtitleOption(); return; }
+                        if (meta.extracted_subs && meta.extracted_subs.length > 0) {
+                            meta.extracted_subs.forEach(s => addExtractedSubtitleOption(s));
+                        }
+                        if (!meta.extraction_pending) {
+                            removeLoadingSubtitleOption();
+                        }
+                    }).catch(() => { removeLoadingSubtitleOption(); });
+                }
+                    
+            } else if (mediaType === 'audio') {
+                if (legacyModeEnabled) {
+                    mediaPlayer.innerHTML = '<audio controls autoplay style="width:100%;"><source src="' + url + '">Your browser does not support the audio tag.</audio>';
+                } else {
+                mediaPlayer.innerHTML = `<audio controls autoplay><source src="${url}"></audio>`;
+                }
+            } else if (mediaType === 'image') {
+                currentGalleryIndex = galleryImages.findIndex(img => img.name === filename);
+                document.getElementById('btn-prev').classList.remove('hidden');
+                document.getElementById('btn-next').classList.remove('hidden');
+                updateGalleryView();
+            }
+        }
+
+        overlay.style.display = 'flex';
+        setTimeout(() => overlay.querySelector('.modal').classList.add('active'), 10);
+    }
+
+    function closeModal(e) {
+        if (e === null || e.target.id === 'modal-overlay') {
+            stopMediaPlayback();
+            if (window._currentVideoKey) {
+                cancelExtraction(window._currentVideoKey);
+                window._currentVideoKey = null;
+            }
+            const overlay = document.getElementById('modal-overlay');
+            overlay.querySelector('.modal').classList.remove('active');
+            setTimeout(() => overlay.style.display = 'none', 200);
+        }
+    }
+
+    function toggleView(viewType, event) {
+        document.getElementById('file-container').className = viewType;
+        document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+        if (event) event.currentTarget.classList.add('active');
+        localStorage.setItem('viewPreference', viewType);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedView = localStorage.getItem('viewPreference') || 'grid';
+        document.getElementById('file-container').className = savedView;
+        const btn = document.querySelector(`.view-btn[title="${savedView === 'grid' ? 'Grid' : 'List'} View"]`);
+        if (btn) btn.classList.add('active');
+    });
+
+    var legacyModeEnabled = false;
+    function toggleLegacyMode(checked) {
+        legacyModeEnabled = !!checked;
+        try {
+            if (window.localStorage) {
+                localStorage.setItem('legacyModeEnabled', legacyModeEnabled ? '1' : '0');
+            }
+        } catch (e) {}
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var saved = '0';
+        try {
+            if (window.localStorage) {
+                saved = localStorage.getItem('legacyModeEnabled') || '0';
+            }
+        } catch (e) {}
+        legacyModeEnabled = (saved === '1');
+        var cb = document.getElementById('legacy-mode-toggle');
+        if (cb) cb.checked = legacyModeEnabled;
+    });
+
+    function filterFiles() {
+        const filter = document.getElementById('search').value.toLowerCase();
+        Array.from(document.getElementById('file-container').children).forEach(item => {
+            const dataName = item.getAttribute('data-name');
+            if (dataName !== null) {
+                // FIXED: Added .toLowerCase() to ensure case-insensitive matching
+                item.style.display = dataName.toLowerCase().includes(filter) ? '' : 'none';
+            }
+        });
+    }
+
+    // ── Upload form 
+    let selectedFiles = [];
+    function showUploadForm() { 
+        document.getElementById('upload-form').style.display = 'block'; 
+    }
+
+    function hideUploadForm() {
+        // Abort any in-flight chunk transfer immediately.
+        if (_activeUploadXhr) {
+            _activeUploadXhr.abort();
+            _activeUploadXhr = null;
+        }
+        // Remove unload warning if the user cancels mid-upload.
+        if (window._activeBeforeUnload) {
+            window.removeEventListener('beforeunload', window._activeBeforeUnload);
+            window._activeBeforeUnload = null;
+        }
+        document.getElementById('upload-form').style.display = 'none';
+        resetUploadForm();
+    }    
+    
+    function resetUploadForm() {
+        selectedFiles = [];
+        document.getElementById('file-list').innerHTML = '';
+        document.getElementById('upload-progress').style.display = 'none';
+        document.getElementById('file-input').value = '';
+    }
+
+    const dropZone = document.getElementById('drop-zone');
+    if (dropZone) {
+        dropZone.onclick = () => document.getElementById('file-input').click();
+        document.getElementById('file-input').onchange = e => handleFiles(e.target.files);
+        ['dragenter','dragover','dragleave','drop'].forEach(ev =>
+            dropZone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }));
+        ['dragenter','dragover'].forEach(ev =>
+            dropZone.addEventListener(ev, () => dropZone.classList.add('dragover')));
+        ['dragleave','drop'].forEach(ev =>
+            dropZone.addEventListener(ev, () => dropZone.classList.remove('dragover')));
+        dropZone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
+    }
+
+    function handleFiles(files) {
+        for (let i = 0; i < files.length; i++)
+            if (!selectedFiles.some(f => f.name === files[i].name)) selectedFiles.push(files[i]);
+        updateFileList();
+    }
+
+    function updateFileList() {
+        const list = document.getElementById('file-list');
+        list.style.maxHeight  = '250px';
+        list.style.overflowY  = 'auto';
+        list.style.paddingRight = '4px';
+        list.innerHTML = '';
+        let totalBytes = 0;
+        selectedFiles.forEach((f, i) => {
+            totalBytes += f.size || 0;
+            const sizeMB = ((f.size || 0) / (1024 * 1024)).toFixed(2);
+            list.innerHTML += `
+                <div style="display:flex; justify-content:space-between; padding:8px;
+                            background:rgba(255,255,255,0.05); margin-bottom:5px; border-radius:8px;">
+                    <span>${f.name} <span style="color:#aaa; font-size:0.85em;">(${sizeMB} MB)</span></span>
+                    <button onclick="selectedFiles.splice(${i},1); updateFileList()"
+                            style="background:none; border:none; color:red; cursor:pointer; font-size:1.2em; line-height:1; padding:0 4px; transition:transform 0.15s ease, color 0.15s ease;"
+                            onmouseover="this.style.transform='scale(1.3)';this.style.color='#ff4444';"
+                            onmouseout="this.style.transform='scale(1)';this.style.color='red';">&#215;</button>
+                </div>`;
+        });
+        let totalEl = document.getElementById('upload-total-size');
+        if (!totalEl) {
+            totalEl = document.createElement('div');
+            totalEl.id = 'upload-total-size';
+            totalEl.style.cssText = 'text-align:right; font-size:0.9em; color:#aaa; margin-bottom:6px;';
+            list.parentNode.insertBefore(totalEl, list.nextSibling);
+        }
+        if (selectedFiles.length > 0) {
+            totalEl.textContent = `Total Size: ${(totalBytes / (1024 * 1024)).toFixed(2)} MB`;
+            totalEl.style.display = 'block';
+        } else {
+            totalEl.style.display = 'none';
+        }
+    }
+
+    /* Chunked / resumable upload
+   Each file is split into CHUNK_SIZE slices (default 5 MB) and sent as
+   sequential POST requests with query-string metadata:
+       POST /path?filename=foo.mp4&chunk=0&total=12
+   The backend (do_POST, PATCH 2) opens the file in 'wb' for chunk 0 and
+   'ab' for all subsequent chunks, then finalises on the last chunk.
+   Progress is tracked per-byte across the whole batch so the progress bar
+   reflects real end-to-end progress.                                        */
+ 
+const CHUNK_SIZE = 16777216;   // 16 MB per slice
+
+// ── Upload state 
+let _uploadPaused   = false;
+let _resumeCallback = null;   // called by togglePause() to unblock the loop
+let _activeUploadXhr = null;   // reference to the in-flight XHR; aborted on cancel
+
+function togglePause() {
+    const btn = document.getElementById('pause-resume-btn');
+    _uploadPaused = !_uploadPaused;
+    if (_uploadPaused) {
+        btn.textContent = '▶ Resume';
+        btn.classList.add('paused');
+    } else {
+        btn.textContent = '⏸ Pause';
+        btn.classList.remove('paused');
+        // Wake the upload loop that is sleeping in waitIfPaused().
+        if (_resumeCallback) { _resumeCallback(); _resumeCallback = null; }
+    }
+}
+
+// Stalls the upload loop while _uploadPaused is true; resolves when resumed.
+function waitIfPaused() {
+    if (!_uploadPaused) return Promise.resolve();
+    return new Promise(resolve => { _resumeCallback = resolve; });
+}
+
+// A tagged error subclass so callers can test err instanceof HttpError
+// and read err.status without parsing the message string.
+class HttpError extends Error {
+    constructor(status, message) {
+        super(message);
+        this.name   = 'HttpError';
+        this.status = status;
+    }
+}
+
+// Special error for strict-mode pending/rejected
+class StrictPendingError extends Error {
+    constructor(strictId) {
+        super('Upload pending admin approval');
+        this.name = 'StrictPendingError';
+        this.strictId = strictId;
+    }
+}
+class StrictRejectedError extends Error {
+    constructor() { super('Upload rejected by admin'); this.name = 'StrictRejectedError'; }
+}
+
+// Track if we're currently in strict pending state
+let _strictPendingId  = null;
+let _strictApproved   = false;
+
+async function sendChunkWithRetry(url, sliceBuffer, chunkIdx, maxRetries = 3) {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            const result = await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', url);
+                xhr.timeout = 300000; // 5-minute per-chunk timeout
+
+                xhr.onload = () => {
+                    _activeUploadXhr = null;
+                    if (xhr.status === 200) {
+                        try {
+                            const resp = JSON.parse(xhr.responseText);
+                            // buffering = still accumulating in RAM, keep sending
+                            if (resp.status === 'buffering') { resolve('buffering'); return; }
+                        } catch {}
+                        resolve();
+                    } else if (xhr.status === 202) {
+                        // Strict mode: file accepted for pending queue
+                        try {
+                            const resp = JSON.parse(xhr.responseText);
+                            resolve({ pending: true, strictId: resp.strict_id });
+                        } catch {
+                            resolve({ pending: true });
+                        }
+                    } else {
+                        reject(new HttpError(
+                            xhr.status,
+                            `Chunk ${chunkIdx} failed (HTTP ${xhr.status}): ${xhr.statusText}`
+                        ));
+                    }
+                };
+                xhr.onerror   = () => { _activeUploadXhr = null; reject(new Error(`Network error on chunk ${chunkIdx}`)); };
+                xhr.ontimeout = () => { _activeUploadXhr = null; reject(new Error(`Chunk ${chunkIdx} timed out`)); };
+                xhr.onabort   = () => { _activeUploadXhr = null; resolve('aborted'); };
+                _activeUploadXhr = xhr;
+                xhr.send(new Blob([sliceBuffer]));
+            });
+            return result; // success / buffering / pending / aborted
+        } catch (err) {
+            if (err instanceof HttpError && (err.status === 429 || err.status === 409 || err.status === 403)) {
+                throw err;
+            }
+            if (attempt === maxRetries) throw err;
+            await new Promise(r => setTimeout(r, 2000));
+        }
+    }
+}
+
+async function startUpload() {
+    if (!selectedFiles.length) return alert('Select files first.');
+
+    // ── Page-unload warning while upload is in progress 
+    const _beforeUnloadHandler = (e) => {
+        e.preventDefault();
+        e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', _beforeUnloadHandler);
+    // Expose so hideUploadForm() can remove it on cancel
+    window._activeBeforeUnload = _beforeUnloadHandler;
+
+    // ── Lock drop-zone and file-input to prevent new files mid-upload 
+    document.getElementById('file-input').disabled = true;
+    document.getElementById('drop-zone').style.pointerEvents = 'none';
+
+    // ── Anti-spam: disable start button, show pause button 
+    const startBtn     = document.getElementById('start-upload-btn');
+    const pauseBtn     = document.getElementById('pause-resume-btn');
+    startBtn.disabled  = true;
+    startBtn.style.display = 'none';
+    pauseBtn.style.display = 'inline-block';
+    _uploadPaused      = false;
+    pauseBtn.textContent = '⏸ Pause';
+    pauseBtn.classList.remove('paused');
+
+    document.getElementById('upload-progress').style.display = 'block';
+    const bar      = document.getElementById('progress-fill');
+    const progText = document.getElementById('progress-text');
+    bar.style.background = '';
+
+    // Pre-calculate total bytes so the overall bar is meaningful.
+    const totalBytes = selectedFiles.reduce((s, f) => s + f.size, 0);
+    let   sentBytes  = 0;
+
+    const updateBar = (delta = 0) => {
+        const pct = Math.min(100, Math.round(((sentBytes + delta) / totalBytes) * 100));
+        bar.style.width    = pct + '%';
+        progText.innerText = pct + '%';
+    };
+
+    // Strict-mode pending: wait for an SSE approval signal
+    // Resolved by the strict_approved SSE listener
+    let _strictApproveResolve = null;
+    let _strictRejectResolve  = null;
+    let _strictApprovePromise = null;
+
+    const onStrictApproved = (e) => {
+        if (_strictApproveResolve) { _strictApproveResolve(true);  _strictApproveResolve = null; }
+    };
+    const onStrictRejected = (e) => {
+        if (_strictRejectResolve) { _strictRejectResolve(true); _strictRejectResolve = null; }
+        if (_strictApproveResolve) { _strictApproveResolve(false); _strictApproveResolve = null; }
+    };
+
+    if (window.sse) {
+        window.sse.addEventListener('strict_upload_approved', onStrictApproved);
+        window.sse.addEventListener('strict_upload_rejected', onStrictRejected);
+    }
+
+    try {
+        for (let fileIdx = 0; fileIdx < selectedFiles.length; fileIdx++) {
+            const file        = selectedFiles[fileIdx];
+            const totalChunks = Math.max(1, Math.ceil(file.size / CHUNK_SIZE));
+            const isFirstFile = fileIdx === 0;
+            const isLastFile  = fileIdx === selectedFiles.length - 1;
+
+            let _pendingMode = false;   // waiting for admin on chunk-0
+            let _bufferingMode = false; // <50MB, still sending chunks to RAM
+
+            for (let chunkIdx = 0; chunkIdx < totalChunks; chunkIdx++) {
+
+                // ── Pause point 
+                await waitIfPaused();
+
+                const start = chunkIdx * CHUNK_SIZE;
+                const end   = Math.min(start + CHUNK_SIZE, file.size);
+                const slice = file.slice(start, end);
+
+                const sliceBuffer = await slice.arrayBuffer();
+                let hashHex = '';
+                if (window.crypto && window.crypto.subtle) {
+                    const hashBuffer = await window.crypto.subtle.digest('SHA-256', sliceBuffer);
+                    hashHex = Array.from(new Uint8Array(hashBuffer))
+                                   .map(b => b.toString(16).padStart(2, '0'))
+                                   .join('');
+                }
+
+                if (window._cancelledUploads && window._cancelledUploads.has(file.name)) {
+                    throw new Error(`Upload of ${file.name} was cancelled by administrator.`);
+                }
+
+                const isBatchStart = isFirstFile && chunkIdx === 0;
+                const isBatchEnd   = isLastFile  && chunkIdx === totalChunks - 1;
+
+                const url = window.location.pathname
+                    + '?filename='      + encodeURIComponent(file.name)
+                    + '&chunk='         + chunkIdx
+                    + '&total='         + totalChunks
+                    + '&file_count='    + selectedFiles.length
+                    + '&hash='          + hashHex
+                    + '&total_bytes='   + file.size
+                    + '&is_first_file=' + (isBatchStart ? '1' : '0')
+                    + '&is_last_file='  + (isBatchEnd   ? '1' : '0');
+
+                const result = await sendChunkWithRetry(url, sliceBuffer, chunkIdx);
+
+                if (result && typeof result === 'object' && result.pending) {
+                    // Chunk-0: server is holding this for admin approval
+                    // For ≥50MB this blocks server-side; for <50MB we keep streaming
+                    _pendingMode  = true;
+                    _bufferingMode = false;
+                    progText.innerText = '⏳ Waiting for Approval…';
+                    bar.style.background = 'var(--neon-orange, #ff9900)';
+                    showToast('⏳ Upload pending approval', 'warning', 8000);
+
+                } else if (result === 'buffering') {
+                    // Server is still accumulating in RAM; keep sending
+                    _bufferingMode = true;
+                    progText.innerText = '📦 Buffering… ' + Math.round(((sentBytes + (end-start)) / totalBytes) * 100) + '%';
+                }
+
+                sentBytes += (end - start);
+                if (!_pendingMode && !_bufferingMode) updateBar(0);
+            }
+
+            // After all chunks for this file: if we were in pending/buffering mode,
+            // the final response from the server was the approval gate.
+            // The loop naturally exited once all chunks got 200/buffering/ok.
+            if (_pendingMode || _bufferingMode) {
+                // Reset bar styling for the next file
+                bar.style.background = '';
+            }
+        }
+
+        // ── All files uploaded successfully ───────────────────────────────
+        bar.style.background = '#4CAF50';
+        progText.innerText   = '100% — Done!';
+        pauseBtn.style.display = 'none';
+        startBtn.style.display = 'inline-block';
+        startBtn.disabled = false;
+        window.removeEventListener('beforeunload', _beforeUnloadHandler);
+        window._activeBeforeUnload = null;
+        setTimeout(() => location.reload(), 1000);
+
+    } 
+    catch (err) {
+        bar.style.background   = '#f44336';
+        progText.innerText     = 'Upload failed';
+        pauseBtn.style.display = 'none';
+        startBtn.style.display = 'inline-block';
+        startBtn.disabled      = false;
+        console.error('Upload error:', err);
+
+        if (err instanceof HttpError && err.status === 429) {
+            showToast(
+                '⏱ You are on cooldown. Wait 5 minutes before uploading.',
+                'error', 12000
+            );
+            progText.innerText = '⏱ On cooldown';
+        } 
+        else if (err instanceof HttpError && err.status === 409) {
+            progText.innerText = '🚫 Upload rejected';
+        } 
+        else if (err instanceof HttpError && err.status === 403) {
+            showToast('🚫 Upload rejected', 'error', 8000);
+            progText.innerText = 'Rejected';
+            hideUploadForm();
+        } 
+        else {
+            alert('Upload failed: ' + err.message);
+        }
+    } 
+    finally {
+        // Restore upload inputs regardless of success or failure
+        document.getElementById('file-input').disabled = false;
+        document.getElementById('drop-zone').style.pointerEvents = 'auto';
+        window.removeEventListener('beforeunload', _beforeUnloadHandler);
+        window._activeBeforeUnload = null;
+
+        if (window.sse) {
+            window.sse.removeEventListener('strict_upload_approved', onStrictApproved);
+            window.sse.removeEventListener('strict_upload_rejected', onStrictRejected);
+        }
+    }
+}
+// P2P DISPATCHER & SIDEBAR
+
+// State 
+let _p2pMyId    = sessionStorage.getItem('p2pMyId') || null;
+let _p2pMyName  = null;
+let _p2pOnline  = false;
+let _p2pSidebarOpen = false;
+let _p2pPollTimer   = null;
+let _p2pDND     = false;   // Do Not Disturb
+
+// Active windows:  peer_id → { el, iframe, targetName }
+const _p2pWindows = {};
+
+//  Connection Dictionary 
+// peer_id → { pc, dc, peerName, messages[], pendingIce[], makingOffer, unread }
+const _p2pConns = {};
+
+const _P2P_STUN    = { iceServers: [] };
+const _P2P_CHUNK   = 16384;
+const _P2P_BUF_HI  = 4 * 1024 * 1024;
+const _P2P_BUF_LO  = 1 * 1024 * 1024;
+
+function _p2pPolite(peerId) { return _p2pMyId < peerId; }
+
+function _p2pGetOrCreateConn(peerId, peerName) {
+    if (_p2pConns[peerId]) return _p2pConns[peerId];
+    _p2pConns[peerId] = {
+        pc: null, dc: null,
+        peerName: peerName || peerId,
+        messages: [],
+        pendingIce: [],
+        makingOffer: false,
+        unread: false,
+        unreadCount: 0,
+        rxMeta: null, rxBytes: 0, rxChunks: [], rxWritable: null,
+    };
+    return _p2pConns[peerId];
+}
+
+//  WebRTC core 
+function _p2pCreatePC(peerId) {
+    const conn = _p2pConns[peerId];
+    if (!conn) return null;
+    if (conn.pc) { try { conn.pc.close(); } catch {} }
+    const pc = new RTCPeerConnection(_P2P_STUN);
+    conn.pc = pc;
+
+    pc.onicecandidate = ({ candidate }) => {
+        if (candidate) _p2pRelay(peerId, 'ice', candidate.toJSON());
+    };
+
+    pc.ondatachannel = ({ channel }) => {
+        _p2pWireDC(peerId, channel);
+    };
+
+    pc.ontrack = (event) => {
+        const stream = event.streams[0];
+        const win = _p2pWindows[peerId];
+        if (win && win.iframe && win.iframe.contentWindow) {
+            try { win.iframe.contentWindow.attachRemoteStream(stream); } catch {}
+        }
+    };
+
+    pc.onconnectionstatechange = () => {
+        const state = pc.connectionState;
+        if (state === 'connected') {
+            _p2pToIframe(peerId, { type: 'conn_state', state: 'connected' });
+        } else if (state === 'failed' || state === 'disconnected') {
+            _p2pToIframe(peerId, { type: 'conn_state', state });
+
+            // Auto-reconnect: only the "impolite" side re-offers, so both
+            // peers don't race simultaneous offers. This resumes the existing
+            // session (and shared history) for peers who briefly dropped
+            // (e.g. the other side reloaded its page).
+            if (!_p2pPolite(peerId)) {
+                setTimeout(() => {
+                    const conn = _p2pConns[peerId];
+                    if (conn && conn.pc === pc && pc.connectionState !== 'connected') {
+                        _p2pStartAsOfferer(peerId);
+                    }
+                }, 2000);
+            }
+        }
+    };
+
+    return pc;
+}
+
+function _p2pWireDC(peerId, channel) {
+    const conn = _p2pConns[peerId];
+    if (!conn) return;
+    conn.dc = channel;
+    channel.binaryType = 'arraybuffer';
+    channel.bufferedAmountLowThreshold = _P2P_BUF_LO;
+
+    channel.onopen = () => {
+        _p2pToIframe(peerId, { type: 'dc_open' });
+    };
+
+    channel.onclose = () => {
+        _p2pToIframe(peerId, { type: 'dc_close' });
+    };
+
+    channel.onmessage = (event) => _p2pHandleDCMsg(peerId, event);
+}
+
+function _p2pHandleDCMsg(peerId, event) {
+    const conn = _p2pConns[peerId];
+    if (!conn) return;
+
+    if (typeof event.data === 'string') {
+        let msg;
+        try { msg = JSON.parse(event.data); } catch { return; }
+
+        if (msg.type === 'chat' || msg.type === 'file_meta' || msg.type === 'file_eof'
+            || msg.type === 'blocked' || msg.type === 'unblocked' || msg.type === 'remote_screen_share') {
+
+            // Store in history (chat/file_meta); file_eof updates the matching file_meta entry
+            if (msg.type === 'chat' || msg.type === 'file_meta') {
+                conn.messages.push({ dir: 'in', ...msg, ts: Date.now() });
+                _p2pSaveHistory();
+            } else if (msg.type === 'file_eof') {
+                for (let i = conn.messages.length - 1; i >= 0; i--) {
+                    const m = conn.messages[i];
+                    if (m.dir === 'in' && m.type === 'file_meta' && !m.status) {
+                        m.status = 'received';
+                        break;
+                    }
+                }
+                _p2pSaveHistory();
+            }
+
+            // Deliver to iframe if open, otherwise mark unread
+            const win = _p2pWindows[peerId];
+            const winVisible = win && win.el && win.el.style.opacity !== '0';
+
+            if (winVisible) {
+                _p2pToIframe(peerId, { type: 'dc_msg', payload: msg });
+            } else {
+                if (msg.type === 'chat') {
+                    conn.unread = true;
+                    conn.unreadCount = (conn.unreadCount || 0) + 1;
+                    _p2pMarkUnread(peerId, conn.peerName);
+                }
+            }
+        }
+    } else {
+        // Binary chunk — forward to iframe for progress rendering
+        const win = _p2pWindows[peerId];
+        if (win && win.iframe && win.iframe.contentWindow) {
+            try { win.iframe.contentWindow.postMessage({ _p2p: true, type: 'dc_bin', data: event.data }, '*', [event.data]); } catch {}
+        }
+    }
+}
+
+async function _p2pRelay(peerId, type, payload) {
+    try {
+        await fetch('/p2p/signal', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ to: peerId, from: _p2pMyId, type, payload }),
+        });
+    } catch (err) { console.warn('[P2P] relay failed:', err); }
+}
+
+async function _p2pStartAsOfferer(peerId) {
+    const conn = _p2pGetOrCreateConn(peerId);
+    const pc = _p2pCreatePC(peerId);
+    const channel = pc.createDataChannel('p2p', { ordered: true });
+    _p2pWireDC(peerId, channel);
+    try {
+        conn.makingOffer = true;
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        _p2pRelay(peerId, 'offer', pc.localDescription.toJSON());
+    } finally {
+        conn.makingOffer = false;
+    }
+}
+
+async function _p2pStartScreenShare(peerId) {
+    const conn = _p2pConns[peerId];
+    if (!conn || !conn.pc) return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        showToast('Note: Screen sharing is not supported on mobile browsers.', 'warning');
+        _p2pToIframe(peerId, { type: 'screen_share_failed' });
+        return;
+    }
+    try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+        // Linux silently omits system-audio tracks — only report/attach what exists.
+        const hasAudio = stream.getAudioTracks().length > 0;
+        stream.getTracks().forEach(track => conn.pc.addTrack(track, stream));
+        conn.screenStream = stream;
+        conn.makingOffer = true;
+        const offer = await conn.pc.createOffer();
+        await conn.pc.setLocalDescription(offer);
+        _p2pRelay(peerId, 'offer', conn.pc.localDescription.toJSON());
+        conn.makingOffer = false;
+        stream.getVideoTracks()[0].onended = () => _p2pStopScreenShare(peerId);
+        _p2pToIframe(peerId, { type: 'local_screen_share_state', sharing: true, hasAudio });
+        if (conn.dc && conn.dc.readyState === 'open') {
+            conn.dc.send(JSON.stringify({ type: 'remote_screen_share', active: true }));
+        }
+    } catch (err) {
+        console.warn('[P2P] screen share failed:', err);
+        if (err.name === 'NotAllowedError' || err.name === 'NotFoundError') {
+            showToast('Screen sharing is not supported on mobile browsers.', 'warning');
+        }
+        _p2pToIframe(peerId, { type: 'screen_share_failed' });
+    }
+}
+
+function _p2pStopScreenShare(peerId) {
+    const conn = _p2pConns[peerId];
+    if (!conn || !conn.screenStream) return;
+    conn.screenStream.getTracks().forEach(t => t.stop());
+    if (conn.pc) {
+        conn.pc.getSenders().forEach(sender => {
+            if (sender.track && conn.screenStream.getTracks().includes(sender.track)) {
+                conn.pc.removeTrack(sender);
+            }
+        });
+    }
+    conn.screenStream = null;
+    _p2pToIframe(peerId, { type: 'local_screen_share_state', sharing: false });
+    if (conn.dc && conn.dc.readyState === 'open') {
+        conn.dc.send(JSON.stringify({ type: 'remote_screen_share', active: false }));
+    }
+}
+
+async function _p2pHandleSignal(msg) {
+    const senderId = msg.from;
+    const senderName = msg.from_name || senderId;
+
+    if (msg.type === 'offer') {
+        const conn = _p2pGetOrCreateConn(senderId, senderName);
+
+        const offerCollision = conn.makingOffer || (conn.pc && conn.pc.signalingState !== 'stable');
+        if (offerCollision) {
+            if (!_p2pPolite(senderId)) return;
+            await conn.pc.setLocalDescription({ type: 'rollback' });
+        }
+
+        if (!conn.pc) _p2pCreatePC(senderId);
+
+        // Apply pending ICE
+        for (const c of conn.pendingIce) {
+            try { await conn.pc.addIceCandidate(new RTCIceCandidate(c)); } catch {}
+        }
+        conn.pendingIce = [];
+
+        await conn.pc.setRemoteDescription(new RTCSessionDescription(msg.payload));
+        const answer = await conn.pc.createAnswer();
+        await conn.pc.setLocalDescription(answer);
+        _p2pRelay(senderId, 'answer', conn.pc.localDescription.toJSON());
+
+        // If we already have message history with this peer, this offer is a
+        // reconnection (e.g. they reloaded their page) rather than a fresh
+        // connection request — resume seamlessly without a consent prompt.
+        const isReconnect = conn.messages && conn.messages.length > 0;
+
+        // Show consent in iframe if open, else show toast + badge
+        const win = _p2pWindows[senderId];
+        if (win) {
+            if (isReconnect) {
+                _p2pToIframe(senderId, { type: 'conn_state', state: 'connecting' });
+            } else {
+                _p2pToIframe(senderId, { type: 'consent_request', from_name: senderName });
+            }
+        } else if (!isReconnect) {
+            if (!window._p2pPendingOffers) window._p2pPendingOffers = {};
+            window._p2pPendingOffers[senderId] = { msg, senderName };
+            // Red dot/unread badge reserved for actual chat messages only —
+            // connection establishment alone should not flag unread.
+        }
+
+    } else if (msg.type === 'answer') {
+        const conn = _p2pConns[senderId];
+        if (conn && conn.pc) {
+            try { await conn.pc.setRemoteDescription(new RTCSessionDescription(msg.payload)); } catch {}
+        }
+
+    } else if (msg.type === 'ice') {
+        const conn = _p2pConns[senderId];
+        if (conn) {
+            if (conn.pc && msg.payload) {
+                try { await conn.pc.addIceCandidate(new RTCIceCandidate(msg.payload)); } catch {}
+            } else if (msg.payload) {
+                conn.pendingIce.push(msg.payload);
+            }
+        }
+
+    } else if (msg.type === 'decline') {
+        _p2pToIframe(senderId, { type: 'declined', from_name: senderName });
+
+    } else if (msg.type === 'chat') {
+        // Direct chat signal (fallback/future)
+        const conn = _p2pGetOrCreateConn(senderId, senderName);
+        conn.messages.push({ dir: 'in', type: 'chat', text: msg.payload, ts: Date.now() });
+        const win = _p2pWindows[senderId];
+        if (win && win.el && win.el.style.opacity !== '0') {
+            _p2pToIframe(senderId, { type: 'dc_msg', payload: { type: 'chat', text: msg.payload } });
+        } else {
+            conn.unread = true;
+            conn.unreadCount = (conn.unreadCount || 0) + 1;
+            _p2pMarkUnread(senderId, senderName);
+        }
+    }
+}
+
+function _p2pToIframe(peerId, data) {
+    const win = _p2pWindows[peerId];
+    if (!win || !win.iframe) return;
+    try { win.iframe.contentWindow.postMessage({ _p2p: true, ...data }, '*'); } catch {}
+}
+
+function _p2pHamBadge() {
+    const hamburger = document.getElementById('p2p-hamburger');
+    if (hamburger && !hamburger.querySelector('.p2p-ham-badge')) {
+        const hbadge = document.createElement('span');
+        hbadge.className = 'p2p-ham-badge';
+        hbadge.style.cssText = 'position:absolute;top:2px;right:2px;width:8px;height:8px;border-radius:50%;background:#ff0055;display:block;';
+        hamburger.style.position = 'relative';
+        hamburger.appendChild(hbadge);
+    }
+}
+
+function _p2pPeerBadge(peerId) {
+    const peerItem = document.querySelector(`.p2p-peer-item[data-peer-id="${peerId}"]`);
+    if (peerItem && !peerItem.querySelector('.p2p-peer-badge')) {
+        const pbadge = document.createElement('span');
+        pbadge.className = 'p2p-peer-badge';
+        pbadge.style.cssText = 'width:8px;height:8px;border-radius:50%;background:#ff0055;display:inline-block;flex-shrink:0;margin-left:auto;';
+        peerItem.appendChild(pbadge);
+    }
+}
+
+function _p2pMarkUnread(peerId, peerName) {
+    if (!_p2pDND) showToast(`💬 New message from ${peerName}`, 'info', 3500);
+    _p2pHamBadge();
+    _p2pPeerBadge(peerId);
+    const conn = _p2pConns[peerId];
+    if (conn) conn.unread = true;
+    // Red dot on drag bar title
+    const win = _p2pWindows[peerId];
+    if (win && win.el) {
+        const title = win.el.querySelector('.drag-title');
+        if (title && !title.querySelector('.p2p-title-badge')) {
+            const b = document.createElement('span');
+            b.className = 'p2p-title-badge';
+            b.style.cssText = 'display:inline-block;width:7px;height:7px;border-radius:50%;background:#ff0055;margin-left:5px;vertical-align:middle;';
+            title.appendChild(b);
+        }
+    }
+}
+
+//  Sidebar toggle 
+function toggleP2PSidebar() {
+    _p2pSidebarOpen = !_p2pSidebarOpen;
+    const sidebar  = document.getElementById('p2p-sidebar');
+    const backdrop = document.getElementById('p2p-backdrop');
+    sidebar.style.transform  = _p2pSidebarOpen ? 'translateX(0)' : 'translateX(-100%)';
+    backdrop.style.display   = _p2pSidebarOpen ? 'block' : 'none';
+    if (_p2pSidebarOpen && _p2pOnline) _p2pRefreshPeers();
+}
+
+//  Register with backend 
+async function p2pConnect() {
+    const nameInput = document.getElementById('alias-input');
+    _p2pMyName = (nameInput && nameInput.value.trim()) || navigator.platform || 'Device';
+
+    try {
+        const res = await fetch('/p2p/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name:     _p2pMyName,
+                peer_id:  _p2pMyId  || '',
+                sse_uuid: window._sseUuid || '',
+            }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        _p2pMyId   = data.peer_id;
+        _p2pMyName = data.name;
+        _p2pOnline = true;
+        sessionStorage.setItem('p2pMyId', _p2pMyId);
+
+        // Rehydrate history from sessionStorage for any known peers
+        _p2pLoadHistory();
+
+        // Once connected, peers stay connected — no "Go Offline" toggle.
+        const statusPill = document.getElementById('p2p-status-pill');
+        if (statusPill) statusPill.textContent = '';
+
+        _p2pRefreshPeers();
+        // Heartbeat: keep peer_id alive in registry every 20s
+        if (_p2pPollTimer) clearInterval(_p2pPollTimer);
+        _p2pPollTimer = setInterval(() => {
+            if (_p2pMyId && _p2pOnline) {
+                fetch('/p2p/heartbeat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ peer_id: _p2pMyId }),
+                }).catch(() => {});
+            }
+            if (_p2pSidebarOpen && _p2pOnline) _p2pRefreshPeers();
+        }, 20_000);
+
+    } catch (e) {
+        showToast('P2P registration failed: ' + e.message, 'error');
+    }
+}
+
+// Refresh peer list 
+async function _p2pRefreshPeers() {
+    if (!_p2pOnline) return;
+    try {
+        const uuidParam = window._sseUuid ? `?sse_uuid=${encodeURIComponent(window._sseUuid)}` : '';
+        const res   = await fetch('/p2p/peers' + uuidParam);
+        const peers = await res.json();
+
+        const selfEntry = { peer_id: _p2pMyId, name: _p2pMyName, ip: '(this device)' };
+        const allPeers  = [selfEntry, ...peers];
+
+        const listEl  = document.getElementById('p2p-peer-list');
+        const emptyEl = document.getElementById('p2p-empty-msg');
+        const countEl = document.getElementById('p2p-peer-count');
+
+        countEl.textContent = peers.length;
+
+        // Remove old peer items (keep empty msg)
+        listEl.querySelectorAll('.p2p-peer-item').forEach(el => el.remove());
+
+        emptyEl.style.display = 'none';
+
+        // Prepend self entry
+        const selfItem = document.createElement('div');
+        selfItem.className = 'p2p-peer-item';
+        selfItem.style.cssText = `
+            display:flex; align-items:center; gap:10px; padding:9px 10px;
+            border-radius:12px; background:rgba(255,255,255,0.03);
+            border:1px solid rgba(0,229,255,0.1);
+        `;
+        const selfIcon = document.createElement('span');
+        selfIcon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;';
+        selfIcon.textContent = '💻';
+        const selfInfo = document.createElement('div');
+        selfInfo.style.flex = '1';
+        selfInfo.innerHTML = `
+            <div style="font-size:13px;font-weight:600;color:#e0e0e0;">${escapeHtml(_p2pMyName)}</div>
+        `;
+        const selfTag = document.createElement('span');
+        selfTag.textContent = '(You)';
+        selfTag.style.cssText = 'padding:5px 11px;font-size:12px;color:var(--accent);white-space:nowrap;font-style:italic;';
+        selfItem.append(selfIcon, selfInfo, selfTag);
+        listEl.appendChild(selfItem);
+
+            peers.forEach(peer => {
+                const item = document.createElement('div');
+                item.className = 'p2p-peer-item';
+                item.setAttribute('data-peer-id', peer.peer_id);
+                item.style.cssText = `
+                    display:flex; align-items:center; gap:10px; padding:9px 10px;
+                    border-radius:12px; background:rgba(255,255,255,0.03);
+                    border:1px solid rgba(0,229,255,0.1); cursor:pointer;
+                    transition:background 0.18s;
+                `;
+                item.onmouseover = () => item.style.background = 'rgba(0,229,255,0.08)';
+                item.onmouseout  = () => item.style.background = 'rgba(255,255,255,0.03)';
+
+                const icon = document.createElement('span');
+                icon.style.cssText = 'width:32px;height:32px;border-radius:50%;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;';
+                icon.textContent = '💻';
+
+                const info = document.createElement('div');
+                info.style.flex = '1';
+                info.innerHTML = `
+                    <div style="font-size:13px;font-weight:600;color:#e0e0e0;">${escapeHtml(peer.name)}</div>
+                    <div style="font-size:11px;color:#666;">${escapeHtml(peer.ip)}</div>
+                `;
+
+                const btn = document.createElement('button');
+                btn.textContent = 'Chat';
+                btn.style.cssText = `
+                    padding:5px 11px; border-radius:8px; border:1px solid rgba(0,229,255,0.3);
+                    background:rgba(0,229,255,0.08); color:#00e5ff; font-size:12px;
+                    cursor:pointer; white-space:nowrap; transition:background 0.2s;
+                `;
+                btn.onmouseover = () => btn.style.background = 'rgba(0,229,255,0.2)';
+                btn.onmouseout  = () => btn.style.background = 'rgba(0,229,255,0.08)';
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    const badge = item.querySelector('.p2p-peer-badge');
+                    if (badge) badge.remove();
+                    const conn = _p2pConns[peer.peer_id];
+                    if (conn) conn.unread = false;
+                    if (window._p2pPendingOffers && window._p2pPendingOffers[peer.peer_id]) {
+                        delete window._p2pPendingOffers[peer.peer_id];
+                        _p2pOpenWindow(peer.peer_id, peer.name, 'answer');
+                    } else {
+                        _p2pOpenWindow(peer.peer_id, peer.name, 'offer');
+                    }
+                    if (_p2pSidebarOpen) toggleP2PSidebar();
+                };
+                item.appendChild(icon);
+                item.appendChild(info);
+                item.appendChild(btn);
+
+                // Re-attach unread badge if conn.unread is still true
+                const existingConn = _p2pConns[peer.peer_id];
+                if (existingConn && existingConn.unread) {
+                    const pbadge = document.createElement('span');
+                    pbadge.className = 'p2p-peer-badge';
+                    pbadge.style.cssText = 'width:8px;height:8px;border-radius:50%;background:#ff0055;display:inline-block;flex-shrink:0;margin-left:auto;';
+                    item.appendChild(pbadge);
+                }
+
+                item.addEventListener('click', () => {
+                    const badge = item.querySelector('.p2p-peer-badge');
+                    if (badge) badge.remove();
+                    if (_p2pConns[peer.peer_id]) _p2pConns[peer.peer_id].unread = false;
+                });
+
+                listEl.appendChild(item);
+        });
+    } catch (e) {}
+}
+
+// Open / bring-to-front a floating peer window 
+function _p2pOpenWindow(targetId, targetName, mode) {
+    if (!_p2pMyId) return;
+
+    // If window already exists, just bring it to front
+    if (_p2pWindows[targetId]) {
+        const existing = _p2pWindows[targetId].el;
+        existing.style.zIndex = _p2pNextZ();
+        // Clear unread state
+        const conn = _p2pConns[targetId];
+        if (conn) conn.unread = false;
+        const tb = existing.querySelector('.p2p-title-badge');
+        if (tb) tb.remove();
+        return;
+    }
+
+    // Ensure connection record exists
+    _p2pGetOrCreateConn(targetId, targetName);
+
+    // Create window shell
+    const win = document.createElement('div');
+    win.className = 'p2p-window';
+    win.style.cssText += `right:${20 + Object.keys(_p2pWindows).length * 20}px;bottom:${60 + Object.keys(_p2pWindows).length * 20}px;z-index:${_p2pNextZ()};`;
+
+    // Drag bar
+    const dragBar = document.createElement('div');
+    dragBar.className = 'p2p-drag-bar';
+    dragBar.innerHTML = `
+        <span class="drag-title">${escapeHtml(targetName)}</span>
+        <button class="drag-close" onclick="p2pCloseWindow('${targetId}')">✕</button>
+    `;
+
+    // iframe — no mode/target/my_id in URL; parent owns all WebRTC
+    const iframe = document.createElement('iframe');
+    iframe.className = 'p2p-iframe';
+    iframe.src = `/peer.html?peer_name=${encodeURIComponent(targetName)}`;
+    iframe.setAttribute('allow', 'microphone');
+
+    win.appendChild(dragBar);
+    win.appendChild(iframe);
+    document.body.appendChild(win);
+
+    _p2pWindows[targetId] = { el: win, iframe, targetName };
+
+    // Clear hamburger badge when a chat window is opened
+    const hbadge = document.querySelector('#p2p-hamburger .p2p-ham-badge');
+    if (hbadge) hbadge.remove();
+
+    // Start WebRTC if mode=offer and no existing connection
+    const conn = _p2pConns[targetId];
+    if (mode === 'offer' && conn && !conn.pc) {
+        _p2pStartAsOfferer(targetId);
+    }
+
+    // Drag logic
+    let isDragging = false, startX = 0, startY = 0, origRight = 0, origBottom = 0;
+
+    function _dragStart(clientX, clientY) {
+        isDragging = true;
+        startX     = clientX;
+        startY     = clientY;
+        const rect = win.getBoundingClientRect();
+        origRight  = window.innerWidth  - rect.right;
+        origBottom = window.innerHeight - rect.bottom;
+        win.style.zIndex = _p2pNextZ();
+        // CRITICAL: disable pointer events on ALL iframes to prevent sticky-mouse
+        document.querySelectorAll('.p2p-iframe').forEach(f => f.style.pointerEvents = 'none');
+    }
+
+    function _dragMove(clientX, clientY) {
+        if (!isDragging) return;
+        const dx = clientX - startX;
+        const dy = clientY - startY;
+        win.style.right  = (origRight  - dx) + 'px';
+        win.style.bottom = (origBottom - dy) + 'px';
+    }
+
+    function _dragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        document.querySelectorAll('.p2p-iframe').forEach(f => f.style.pointerEvents = '');
+    }
+
+    dragBar.addEventListener('mousedown', e => _dragStart(e.clientX, e.clientY));
+    document.addEventListener('mousemove', e => _dragMove(e.clientX, e.clientY));
+    document.addEventListener('mouseup', _dragEnd);
+
+    dragBar.addEventListener('touchstart', e => {
+        const t = e.touches[0];
+        _dragStart(t.clientX, t.clientY);
+    }, { passive: true });
+
+    document.addEventListener('touchmove', e => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const t = e.touches[0];
+        _dragMove(t.clientX, t.clientY);
+    }, { passive: false });
+
+    document.addEventListener('touchend', _dragEnd);
+}
+
+let _p2pZCounter = 4000;
+function _p2pNextZ() { return ++_p2pZCounter; }
+
+function p2pCloseWindow(targetId) {
+    const entry = _p2pWindows[targetId];
+    if (!entry) return;
+    entry.el.style.animation = 'none';
+    entry.el.style.opacity   = '0';
+    entry.el.style.transform = 'scale(0.9)';
+    entry.el.style.transition = 'opacity 0.2s, transform 0.2s';
+    setTimeout(() => {
+        entry.el.remove();
+        delete _p2pWindows[targetId];
+    }, 200);
+}
+
+// Persistent identity & history helpers ─────────────────────────────────────
+
+function _p2pSaveHistory() {
+    try {
+        const snapshot = {};
+        for (const [pid, conn] of Object.entries(_p2pConns)) {
+            snapshot[pid] = { peerName: conn.peerName, messages: conn.messages };
+        }
+        sessionStorage.setItem('p2pHistory', JSON.stringify(snapshot));
+    } catch {}
+}
+
+function _p2pLoadHistory() {
+    try {
+        const raw = sessionStorage.getItem('p2pHistory');
+        if (!raw) return;
+        const snapshot = JSON.parse(raw);
+        for (const [pid, data] of Object.entries(snapshot)) {
+            const conn = _p2pGetOrCreateConn(pid, data.peerName);
+            if (data.messages && data.messages.length > conn.messages.length) {
+                conn.messages = data.messages;
+            }
+        }
+    } catch {}
+}
+
+function _p2pToggleDND() {
+    _p2pDND = !_p2pDND;
+    const btn = document.getElementById('p2p-dnd-btn');
+    if (btn) {
+        if (_p2pDND) {
+            btn.textContent = '🔔 DND On';
+            btn.style.background = 'rgba(255,153,0,0.22)';
+            btn.style.borderColor = 'rgba(255,153,0,0.6)';
+        } else {
+            btn.textContent = '🔕 DND';
+            btn.style.background = 'rgba(255,153,0,0.06)';
+            btn.style.borderColor = 'rgba(255,153,0,0.25)';
+        }
+    }
+}
+
+// Signal Dispatcher ─────────────────────────────────────────────────────────
+
+function _p2pInitDispatcher() {
+    if (!window.sse) return;
+
+    // INBOUND: server pushed a WebRTC signal → handled entirely in index.html
+    window.sse.addEventListener('p2p_signal', (e) => {
+        const msg = JSON.parse(e.data);
+        _p2pHandleSignal(msg).catch(err => console.warn('[P2P] signal error:', err));
+    });
+
+    // OUTBOUND messages from peer.html iframes
+    window.addEventListener('message', async (event) => {
+        const msg = event.data;
+        if (!msg || !msg._p2p) return;
+
+        // Find which peer this iframe belongs to
+        let peerId = null;
+        for (const [pid, entry] of Object.entries(_p2pWindows)) {
+            if (entry.iframe && entry.iframe.contentWindow === event.source) {
+                peerId = pid;
+                break;
+            }
+        }
+
+        if (msg.type === 'ready') {
+            // peer.html loaded — hydrate with history and connection state
+            if (!peerId) return;
+            const conn = _p2pConns[peerId];
+            if (!conn) return;
+            conn.unread = false;
+            const _unreadCount = conn.unreadCount || 0;
+            conn.unreadCount = 0;
+            const win = _p2pWindows[peerId];
+            if (win) {
+                const tb = win.el && win.el.querySelector('.p2p-title-badge');
+                if (tb) tb.remove();
+                // Also clear the sidebar badge for this peer
+                const peerItem = document.querySelector(`.p2p-peer-item[data-peer-id="${peerId}"]`);
+                const pb = peerItem && peerItem.querySelector('.p2p-peer-badge');
+                if (pb) pb.remove();
+            }
+            // Send hydration: history + dc state
+            const dcOpen = conn.dc && conn.dc.readyState === 'open';
+            _p2pToIframe(peerId, {
+                type: 'hydrate',
+                peerName: conn.peerName,
+                messages: conn.messages,
+                dcOpen,
+                unreadCount: _unreadCount,
+            });
+
+        } else if (msg.type === 'send_chat') {
+            if (!peerId) return;
+            const conn = _p2pConns[peerId];
+            if (!conn || !conn.dc || conn.dc.readyState !== 'open') return;
+            conn.dc.send(JSON.stringify({ type: 'chat', text: msg.text }));
+            conn.messages.push({ dir: 'out', type: 'chat', text: msg.text, ts: Date.now() });
+            _p2pSaveHistory();
+
+        } else if (msg.type === 'send_file_meta') {
+            if (!peerId) return;
+            const conn = _p2pConns[peerId];
+            if (!conn || !conn.dc || conn.dc.readyState !== 'open') return;
+            conn.dc.send(JSON.stringify({ type: 'file_meta', name: msg.name, size: msg.size, mime: msg.mime }));
+            conn.messages.push({ dir: 'out', type: 'file_meta', name: msg.name, size: msg.size, ts: Date.now() });
+
+        } else if (msg.type === 'send_file_chunk') {
+            if (!peerId) return;
+            const conn = _p2pConns[peerId];
+            if (!conn || !conn.dc || conn.dc.readyState !== 'open') return;
+            conn.dc.send(msg.data);
+
+        } else if (msg.type === 'send_file_eof') {
+            if (!peerId) return;
+            const conn = _p2pConns[peerId];
+            if (!conn || !conn.dc || conn.dc.readyState !== 'open') return;
+            conn.dc.send(JSON.stringify({ type: 'file_eof' }));
+            for (let i = conn.messages.length - 1; i >= 0; i--) {
+                const m = conn.messages[i];
+                if (m.dir === 'out' && m.type === 'file_meta' && !m.status) {
+                    m.status = 'sent';
+                    break;
+                }
+            }
+            _p2pSaveHistory();
+
+        } else if (msg.type === 'send_blocked') {
+            if (!peerId) return;
+            const conn = _p2pConns[peerId];
+            if (!conn || !conn.dc || conn.dc.readyState !== 'open') return;
+            conn.dc.send(JSON.stringify({ type: msg.blocked ? 'blocked' : 'unblocked' }));
+
+        } else if (msg.type === 'clear_history') {
+            // peer.html "Clear All" — wipe in-memory + sessionStorage history
+            if (!peerId) return;
+            const conn = _p2pConns[peerId];
+            if (conn) conn.messages = [];
+            _p2pSaveHistory();
+
+        } else if (msg.type === 'consent_accept') {
+            // User accepted incoming connection — nothing more needed (PC already set up)
+            if (peerId) _p2pToIframe(peerId, { type: 'consent_accepted' });
+
+        } else if (msg.type === 'consent_decline') {
+            if (!peerId) return;
+            _p2pRelay(peerId, 'decline', null);
+            const conn = _p2pConns[peerId];
+            if (conn && conn.pc) { try { conn.pc.close(); } catch {} conn.pc = null; conn.dc = null; }
+
+        } else if (msg.type === 'close') {
+            // iframe requested its window be closed
+            if (peerId) p2pCloseWindow(peerId);
+
+        } else if (msg.type === 'dc_buffered_low_request') {
+            // peer.html wants to know when dc buffer drains (for file send backpressure)
+            if (!peerId) return;
+            const conn = _p2pConns[peerId];
+            if (conn && conn.dc) {
+                conn.dc.onbufferedamountlow = () => {
+                    _p2pToIframe(peerId, { type: 'dc_buffered_low' });
+                };
+            }
+
+        } else if (msg.type === 'start_screen_share') {
+            if (!peerId) return;
+            _p2pStartScreenShare(peerId);
+
+        } else if (msg.type === 'stop_screen_share') {
+            if (!peerId) return;
+            _p2pStopScreenShare(peerId);
+        }
+    });
+
+    // Clear hamburger red dot when sidebar opens
+    const _origToggle = window.toggleP2PSidebar;
+    window.toggleP2PSidebar = function() {
+        _origToggle && _origToggle();
+        const hbadge = document.querySelector('#p2p-hamburger .p2p-ham-badge');
+        if (hbadge) hbadge.remove();
+    };
+
+    document.getElementById('p2p-peer-list').addEventListener('click', function(e) {
+        const item = e.target.closest('.p2p-peer-item[data-peer-id]');
+        if (!item) return;
+        const badge = item.querySelector('.p2p-peer-badge');
+        if (badge) badge.remove();
+        // Also clear conn.unread so badge doesn't re-appear on next refresh
+        const pid = item.getAttribute('data-peer-id');
+        if (pid && _p2pConns[pid]) _p2pConns[pid].unread = false;
+    });
+
+    // On SSE connect, rehydrate from sessionStorage so history survives reload
+    const _origSseInit = window.addEventListener;
+    if (window._sseUuid) _p2pLoadHistory();
+    // Also hook into the init SSE event to load history after UUID is known
+    if (window.sse) {
+        window.sse.addEventListener('init', () => { _p2pLoadHistory(); });
+    }
+}
+
+function _p2pDispatchToWindow(peerId, msg) {
+    _p2pToIframe(peerId, msg);
+}
+
+</script>
+</body>
+</html>
