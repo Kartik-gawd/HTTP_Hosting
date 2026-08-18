@@ -27,37 +27,28 @@ from typing import TYPE_CHECKING
 from utils.http_helpers import *
 
 def _json_response(handler, data: dict) -> None:
-    """Send a 200 JSON response (defaults to HTTP 200)."""
     send_json(handler, 200, data)
 from utils.peer_registry import *
 
 if TYPE_CHECKING:
     pass  # ModernHandler — referenced by type only
 
-# ── Module-level references (populated by init) ───────────────────────────────
+# Module-level references (populated by init) 
 _g: dict = {}
 
 def _peer_html_path() -> str:
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), "peer.html")
 
 
-# ── Init ──────────────────────────────────────────────────────────────────────
-
 def init(server_globals: dict) -> None:
-    """
-    Called once from server.py after all module-level globals exist.
-    Stores the server namespace so we can call sse_send_to / sse_broadcast
-    and read active_users / _sse_clients without circular imports.
-    """
+    
     global _g
     _g = server_globals
     print("[P2P] Signaling module loaded.")
 
 
-# ── Internal helpers ──────────────────────────────────────────────────────────
 
 def _sse_send_to(sse_uuid: str, event_type: str, data: dict) -> bool:
-    """Thin wrapper around the server's sse_send_to function."""
     fn = _g.get("sse_send_to")
     if fn:
         return fn(sse_uuid, event_type, data)
@@ -65,15 +56,14 @@ def _sse_send_to(sse_uuid: str, event_type: str, data: dict) -> bool:
 
 
 def _sse_broadcast(event_type: str, data: dict) -> None:
-    """Thin wrapper around the server's sse_broadcast function."""
     fn = _g.get("sse_broadcast")
     if fn:
         fn(event_type, data)
 
-# ── Request handlers (called by handle_request dispatcher) ────────────────────
+# Request handlers (called by handle_request dispatcher) 
 
 def _serve_peer_html(handler) -> None:
-    """Serve peer.html from disk (same directory as server.py)."""
+    # Serve peer.html
     path = _peer_html_path()
     try:
         with open(path, "rb") as f:
@@ -100,9 +90,7 @@ def _handle_register(handler) -> None:
     """
     POST /p2p/register
     Body: { "name": "Alice", "peer_id": "<optional-existing-id>", "sse_uuid": "<uuid>" }
-
-    Assigns a unique peer_id per browser tab (keyed to sse_uuid), enabling
-    multiple peers behind the same NAT/IP to coexist independently.
+    Assigns a unique peer_id per browser tab (keyed to sse_uuid)
     """
     raw = read_body(handler)
     if raw is None:
@@ -117,12 +105,7 @@ def _handle_register(handler) -> None:
     ip       = handler.client_address[0]
     sse_uuid = body.get("sse_uuid", "")
 
-    # Re-use peer_id if the client supplies one that is already registered —
-    # this also covers the SAME tab re-registering after a page reload, where
-    # sse_uuid changes but sessionStorage still holds the old peer_id. Keeping
-    # the peer_id stable preserves the remote peer's connection record (and
-    # its message history), so the session can resume instead of being treated
-    # as a brand-new peer.
+
     existing_pid = body.get("peer_id", "")
     if existing_pid:
         # Blindly trust the client-supplied peer_id (covers reload races where
@@ -143,7 +126,7 @@ def _handle_register(handler) -> None:
 def _handle_heartbeat(handler) -> None:
     """
     POST /p2p/heartbeat
-    Body: { "peer_id": "..." }
+    Body: { "peer_id": "" }
     Updates last_seen so the peer isn't GC'd while the SSE tab is open
     but the user hasn't sent a signal recently.
     """
@@ -255,7 +238,7 @@ def _handle_signal(handler) -> None:
         handler.send_error(404, f"Peer '{target_pid}' SSE queue not found (disconnected?)")
 
 
-# ── Main dispatcher (called from server.py do_GET / do_POST) ─────────────────
+# ── Main dispatcher (called from server.py do_GET / do_POST) 
 
 def handle_request(handler) -> bool:
     """
@@ -270,12 +253,12 @@ def handle_request(handler) -> bool:
     path   = parsed.path
     method = handler.command
 
-    # ── Serve peer.html ───────────────────────────────────────────────────────
+    # ── Serve peer.html 
     if path == "/peer.html" and method == "GET":
         _serve_peer_html(handler)
         return True
 
-    # ── P2P API routes ────────────────────────────────────────────────────────
+    # ── P2P API routes 
     if not path.startswith("/p2p/"):
         return False
 
