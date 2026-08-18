@@ -1,126 +1,144 @@
 # HTTP Hosting
 
-This script provides a local HTTP server built on Python's http.server module. It is designed for sharing files quickly and safely across a local network.
-### What it does:
+A lightweight, self-hosted **LAN file and media server** built with Python's `http.server`.
 
-- Creates a small local website on your computer using Python. When you run it, your computer becomes a mini web server that lets you share files with anyone on the same **Wi-Fi or LAN network, not the internet.**
-- This makes it a quick and safe way to share files with multiple devices without needing email, USB drives, or cloud services.
-  
----
+Share a folder with devices on the same Wi-Fi or LAN network through a clean web interface — with media previews, subtitles, uploads, global chat, WebRTC P2P features, and an administration console.
 
-## ✅ Compatibility
+> **LAN only:** This project is designed for local network sharing and is not intended to expose your files directly to the public internet.
 
-### **Works on:** **Windows, macOS, and Linux.**
-  
+
+### Compatibility: **Windows · macOS · Linux**
+
 ## Features:
 
 * Share selected folder on a clean interface.
-* **Preview** for images, audio, and video.
-* **External Subtitles** support.
-* **Download and Upload** files easily. 
-* Console **QR code** for quick mobile access.
-* Entire folder can be downloaded as .zip.
-* Clipboard feature (also a group chat).
-* Session tokens.
+* **Preview** images, audio, and video with **External + Internal Subtitles** support.
+* **Legacy Player Mode** for older devices.
+* **Download and Upload** files easily.
+* **Global Chat** for everyone connected.
+* **P2P Communication** — private chat, file transfer, and screen sharing between connected users.
+* **Admin Controls** — user management, upload moderation, network access controls.
+* **QR Code + LAN Discovery** for easy connection.
+* **HTTPS Support** for secure connections.
+* **Cross-platform** support for Windows, macOS, and Linux.
+* **Standalone Windows EXE** available with no installation required.
+
   
----
+# Windows Download  📥
 
-## Download📥 (Windows-Only) (No Setup Required) 
+**No installation required.**
 
-You can simply download the standalone application:
+1. Go to the [Releases Page](https://github.com/Kartik-gawd/Your-Paradise/releases/tag/v1.1).
+2. Download `YP-server-(HTTP).exe`.
+3. Double-click the executable.
+4. Allow network access if Windows Firewall asks.
+5. Select the folder you want to share.
 
-1.  Go to the **[Releases Page](https://github.com/Kartik-gawd/HTTP_Hosting/releases/tag/v1.1)**.
-2.  Download `launcher.exe`.
-3.  Double-click to run.
-   
----
 
-## How to Setup
 
-### 1. Requirements
+# Running From Source
 
-- Python 3.x.
-- **For Linux**, install **tkinter**. (Built-in for Windows and macOS)
-- (Optional) Install **segno** (QR code dependency):
+## Requirements
+
+- Python 3.x
+- Tkinter
+  - Windows: normally included with Python
+  - macOS: normally included
+  - Linux: install your distribution's Tkinter package
+- FFmpeg for internal subtitle extraction.
+- Optional:
+  - `segno` — QR code generation
+  - `zeroconf` — LAN/mDNS discovery
+
+Install optional Python dependencies:
 
 ```bash
-pip install segno
-```
+pip install segno zeroconf ffmpeg-python
+````
 
-> If skipped, the script runs normally but without QR code display.
+Make sure the **FFmpeg executable** is available in your system `PATH` if you want embedded subtitle extraction.
 
 ---
 
-### 2. Run the Server
+## Starting the Server:
 
-In the code folder, run `launcher.py` using:
+From the project directory:
 
 ```bash
 python launcher.py
 ```
-or by running it through any IDE.
 
-A window will pop up. Select the folder you want to serve.
+You can also launch it through an IDE.
 
----
+A folder-selection window will appear. Select the directory you want to serve.
 
-### 3. Access the Server
+The console will display something similar to:
 
-The console/terminal will show:
-
-```
+```text
 ============================================================
 SERVER STARTING...
 Port: 8000
 Local URL: http://127.0.0.1:8000
 Network URL: http://192.168.1.10:8000
 
-# ... QR Code Image will appear here (if segno is installed)
+# QR Code will appear here if enabled
 
 Press Ctrl+C to stop the server
 ============================================================
 ```
 
-Open one of the URLs in your browser to access the file manager.
+Open the displayed **Network URL** from another device connected to the same Wi-Fi/LAN.
 
----
 
-## Screenshots
+
+# Screenshots
 
 ### Interface
+
 ![Interface](img/image1.png)
 
-### Preview
+### Media Preview
+
 ![Preview](img/image2.png)
 
 ### Upload
+
 ![Upload](img/image3.png)
 
-## Configuration (config.py)
-You can modify config.py to change server behavior:
-- **PORT**: Change the default port (8000).
-- **MAX_UPLOAD_MB**: Set the maximum file upload size (Default: 5GB). Ensure theres enough space in host machine.
-- **EXCLUDED_EXTENSIONS**: Hide specific file types from the web view.
-- **IPs allow/block**: /Removed/
-  
+### P2P
+
+![p2p](img/image4.png)
+
+### Admin
+
+![Admin](img/image5.png)
+
+# Configuration
+
+Available through `config.py`. You can customize:
+
+| Option                | Description                                   |
+| --------------------- | --------------------------------------------- |
+| `PORT`                | Default server port (`8000`)                  |
+| `MAX_UPLOAD_MB`       | Maximum upload size                           |
+| `EXCLUDED_EXTENSIONS` | File extensions hidden from the web interface |
+
+etc.
 ---
 
-## Future enhancement (what it lacks)
+# Note about Network Access
 
-- ### Embedded Audio-tracks and soft subtitles support (Requires a Media player using ffmpeg)
+The server is intended for **trusted local networks**.
+If the program starts successfully but other devices cannot open the webpage while the host computer can, check your firewall.
+Make sure the firewall allows the Python server / packaged executable to accept connections on the configured port.
 
----
+# 🔒 Security Note
 
-## Note: 
+This application is designed primarily for sharing files across a trusted LAN.
+Do not expose the server directly to the public internet without understanding and configuring the required network and security controls.
 
-- Incase the program runs but webpage doesnt load for other devices except host device, then your firewall has blocked the network access for launcher/program.
+# ⚖️ License
 
----
+This project is licensed under the **MIT License**.
 
-## ⚖️ License
-
-This project is licensed under the **MIT License** - see the **[LICENSE](LICENSE)** file for details.
-
-## Contributing
-
-Feel free to submit pull requests or raise issues on the GitHub repository!
+See [LICENSE](LICENSE) for details.
