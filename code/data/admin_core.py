@@ -1,10 +1,3 @@
-"""
-All functions accept `handler` (a ModernHandler instance) so they can
-read paths, headers, client addresses, and send HTTP responses without
-any coupling to the module-level class definition in server.py.
-
-"""
-
 from __future__ import annotations
 
 import datetime
@@ -36,11 +29,10 @@ from utils.strict_mode import (
 )
 
 if TYPE_CHECKING:
-    # Only imported for type hints — avoids circular import at runtime.
-    from server import ModernHandler  # noqa: F401
+    from server import ModernHandler  
 
-# ── Module-level references to server globals ─────────────────────────────────
-# Populated by init() once server.py has finished building its own globals.
+# Module-level references to server globals 
+# Populated by init() once server.py has finished building its own globals. 
 _g: dict = {}
 
 def init(server_globals: dict) -> None:
@@ -50,11 +42,7 @@ def init(server_globals: dict) -> None:
         base_file=_g.get("__file__", "server.py"),
         admin_password=_g.get("ADMIN_PASSWORD", "change_me"),
     )
-    # `from utils.admin_auth import *` copies module attributes into this
-    # namespace, so assigning ADMIN_PASSWORD_HASH here would only update this
-    # module's local copy. _verify_password() reads the real module global in
-    # utils.admin_auth, so install the hash through set_password_hash() instead
-    # (that function uses `global ADMIN_PASSWORD_HASH` inside admin_auth).
+   
     set_password_hash(_g.get("ADMIN_PASSWORD", "change_me"))
 
 _admin_config_lock = threading.Lock()
@@ -63,11 +51,7 @@ def is_localhost(handler) -> bool:
     return is_loopback(handler.client_address[0])
 
 def check_access(handler) -> bool:
-    """
-    Drop-in replacement for ModernHandler.check_access().
-    Checks BANNED_IPS first, then the dynamic ALLOWED_NETWORKS list.
-    Loopback is always permitted (required for admin panel access).
-    """
+   
     client_ip = handler.client_address[0]
     handler.update_active_user(client_ip)
     try:
@@ -81,7 +65,7 @@ def check_access(handler) -> bool:
         return False
 
 def _serve_admin_html(handler) -> None:
-    """Serve admin.html from the same directory as server.py."""
+    # Serve admin.html
     admin_html_path = os.path.join(
         os.path.dirname(os.path.abspath(_g.get("__file__", "server.py"))),
         "admin.html",
@@ -104,9 +88,7 @@ def _redirect_to_login(handler) -> None:
     handler.send_header("Location", "/admin/login")
     handler.end_headers()
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Feature handlers — Section A: Access & Perimeter Control
-# ─────────────────────────────────────────────────────────────────────────────
+# A: Access & Perimeter Control
 
 def handle_admin_network_add(handler, body: dict) -> None:
     subnet_str = body.get("subnet", "").strip()
@@ -217,9 +199,7 @@ def handle_admin_killswitch_off(handler, body: dict) -> None:
     print(f"[Admin] KILL SWITCH DISABLED, {len(restored)} networks restored.")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Feature handlers — Section B: User & Connection Management
-# ─────────────────────────────────────────────────────────────────────────────
+# Section B: User & Connection Management
 
 def handle_admin_radar(handler) -> None:
     active_users      = _g.get("active_users", {})
@@ -334,9 +314,7 @@ def handle_admin_unban(handler, body: dict) -> None:
     print(f"[Admin] Unbanned: {target_ip}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Feature handlers — Section C: Data & Storage Moderation
-# ─────────────────────────────────────────────────────────────────────────────
+#  Section C: Data & Storage Moderation
 
 def handle_admin_clipboard_wipe(handler, body: dict) -> None:
     clipboard_messages = _g.get("clipboard_messages", [])
@@ -396,9 +374,7 @@ def handle_admin_storage(handler) -> None:
         send_admin_error(handler, 500, f"Storage query failed: {e}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Feature handlers — Section D: Traffic & Diagnostics
-# ─────────────────────────────────────────────────────────────────────────────
+# Section D: Traffic & Diagnostics
 
 def handle_admin_ratelimit_status(handler) -> None:
     rate_limiter = _g.get("rate_limiter")
@@ -493,28 +469,21 @@ def handle_admin_upload_locks(handler) -> None:
     send_admin_ok(handler, {"active_locks": lock_entries, "count": len(lock_entries)})
 
 def _do_cancel_upload(target_path: str) -> None:
-    """
-    Shared cancellation logic used by both cancel and cooldown handlers.
-    - Blacklists the path for CANCEL_BLOCK_TTL seconds so escaping chunks
-      are immediately rejected even before the client processes the abort SSE.
-    - Removes the chunk-lock registry entry.
-    - Deletes the partial file from disk.
-    - Broadcasts admin_cancel_upload so the client aborts its XHR.
-    """
+  
     cancel_upload_path(
         target_path,
         modern_handler_class=_g.get("ModernHandler"),
         sse_broadcast_fn=_g.get("sse_broadcast"),
     )
 
-    # 3. Delete the partial file.
+    # Delete the partial file.
     try:
         if os.path.exists(target_path):
             os.remove(target_path)
     except OSError as e:
         print(f"[Admin] Warning: could not delete partial file {target_path}: {e}")
 
-    # 4. Tell the uploading client to abort immediately.
+    # Tell the uploading client to abort immediately.
     _sse_broadcast = _g.get("sse_broadcast")
     if _sse_broadcast:
         _sse_broadcast("admin_cancel_upload", {"filename": os.path.basename(target_path)})
@@ -585,9 +554,7 @@ def handle_admin_get_config(handler) -> None:
     })
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # Strict Mode handlers
-# ─────────────────────────────────────────────────────────────────────────────
 
 def handle_strict_mode_toggle(handler, body: dict) -> None:
     value = bool(body.get("enabled", False))
@@ -681,9 +648,7 @@ def handle_strict_preview(handler, body_or_query) -> None:
     handler.wfile.write(data)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Central router — the single entry point called from server.py
-# ─────────────────────────────────────────────────────────────────────────────
+# single entry point called from server.py
 
 def handle_admin_request(handler, parsed_url, query_params) -> None:
     """
@@ -693,7 +658,7 @@ def handle_admin_request(handler, parsed_url, query_params) -> None:
     path   = parsed_url.path
     method = handler.command  # 'GET' or 'POST'
 
-    # ── Login (no auth cookie required) ──────────────────────────────────────
+    # ── Login (no auth cookie required) 
     if path == "/admin/login":
         if method == "GET":
             handle_admin_login_get(handler)
@@ -703,7 +668,7 @@ def handle_admin_request(handler, parsed_url, query_params) -> None:
             send_admin_error(handler, 405, "Method not allowed.")
         return
 
-    # ── Serve admin dashboard HTML ────────────────────────────────────────────
+    # ── Serve admin dashboard HTML 
     if path == "/admin" and method == "GET":
         if not check_admin_session_only(handler):
             _redirect_to_login(handler)
@@ -711,7 +676,7 @@ def handle_admin_request(handler, parsed_url, query_params) -> None:
         _serve_admin_html(handler)
         return
 
-    # ── Preview in new tab: session cookie only (no CSRF header in new tabs) ──
+    # ── Preview in new tab: session cookie only (no CSRF header in new tabs) 
     if path == "/admin/strict/preview" and method == "GET":
         if not check_admin_session_only(handler):
             send_admin_error(handler, 401, "Unauthorized. Invalid or missing admin session.")
@@ -719,12 +684,12 @@ def handle_admin_request(handler, parsed_url, query_params) -> None:
         handle_strict_preview(handler, query_params)
         return
 
-    # ── All other endpoints require full auth (session + CSRF) ───────────────
+    # ── All other endpoints require full auth (session + CSRF) 
     if not check_admin_auth(handler):
         send_admin_error(handler, 401, "Unauthorized. Invalid or missing admin credentials.")
         return
 
-    # ── GET endpoints ─────────────────────────────────────────────────────────
+    # ── GET endpoints 
     if method == "GET":
         if path == "/admin/radar":         handle_admin_radar(handler);          return
         if path == "/admin/storage":       handle_admin_storage(handler);        return
@@ -739,7 +704,7 @@ def handle_admin_request(handler, parsed_url, query_params) -> None:
         send_admin_error(handler, 404, f"Unknown admin endpoint: GET {path}")
         return
 
-    # ── POST endpoints ────────────────────────────────────────────────────────
+    # ── POST endpoints 
     if method == "POST":
         content_length = int(handler.headers.get("Content-Length", 0))
         if content_length > 65_536:   # 64 KB cap
