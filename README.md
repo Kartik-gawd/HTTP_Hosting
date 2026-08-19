@@ -95,15 +95,11 @@ Open the displayed **Network URL** from another device connected to the same Wi-
 
 ### Interface
 
-![Interface](img/image1.png)
+![Interface](img/image6.png)
 
 ### Media Preview
 
-![Preview](img/image2.png)
-
-### Upload
-
-![Upload](img/image3.png)
+![Preview](img/image7.png)
 
 ### P2P
 
