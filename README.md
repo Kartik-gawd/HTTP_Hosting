@@ -28,7 +28,7 @@ Share a folder with devices on the same Wi-Fi or LAN network through a clean web
 
 **No installation required.**
 
-1. Go to the [Releases Page](https://github.com/Kartik-gawd/Your-Paradise/releases/tag/v1.1).
+1. Go to the [Releases Page](https://github.com/Kartik-gawd/Your-Paradise/releases/tag/V2.0).
 2. Download `YP-server-(HTTP).exe`.
 3. Double-click the executable.
 4. Allow network access if Windows Firewall asks.
