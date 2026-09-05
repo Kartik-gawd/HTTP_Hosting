@@ -5,6 +5,7 @@ import platform
 import ctypes
 import shlex  
 import shutil
+import time
 
 try:
     import tkinter as tk
@@ -62,6 +63,7 @@ def open_folder_picker():
                 stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL,
                 text=True,
+                env=_clean_subprocess_env(),
             )
             folder = result.stdout.strip()
             if folder:
@@ -81,6 +83,7 @@ def open_folder_picker():
                     stdout=subprocess.PIPE,
                     stderr=subprocess.DEVNULL,
                     text=True,
+                    env=_clean_subprocess_env(),
                 )
                 folder = result.stdout.strip()
                 if folder:
@@ -105,7 +108,22 @@ def open_folder_picker():
         except (EOFError, KeyboardInterrupt):
             return None
 
-def launch_server_process(target_folder):
+def _clean_subprocess_env():
+    """Return a copy of the environment with PyInstaller's onefile
+    LD_LIBRARY_PATH override restored to its original value, so that
+    externally spawned processes (terminal emulators, zenity, etc.)
+    don't inherit incompatible bundled library paths and crash."""
+    env = os.environ.copy()
+    for var in ("LD_LIBRARY_PATH", "DYLD_LIBRARY_PATH"):
+        orig_var = var + "_ORIG"
+        if orig_var in env:
+            env[var] = env[orig_var]
+        elif var in env:
+            # No _ORIG saved (not frozen, or nothing to restore) - leave as is
+            pass
+    return env
+
+
     system = platform.system()
 
     if getattr(sys, 'frozen', False):
@@ -122,14 +140,15 @@ def launch_server_process(target_folder):
         proc = subprocess.Popen(
             args,
             close_fds=True,
-            creationflags=subprocess.CREATE_NEW_CONSOLE
+            creationflags=subprocess.CREATE_NEW_CONSOLE,
+            env=_clean_subprocess_env(),
         )
 
     elif system == "Darwin":
         safe_args = " ".join(f'"{_escape_applescript_arg(a)}"' for a in args)
         osascript_cmd = f'tell application "Terminal" to do script "{safe_args}"'
         try:
-            subprocess.run(['osascript', '-e', osascript_cmd])
+            subprocess.run(['osascript', '-e', osascript_cmd], env=_clean_subprocess_env())
             # macOS Terminal launches async; we don't get a Popen object back usually
             return None
         except Exception as e:
@@ -146,24 +165,24 @@ def launch_server_process(target_folder):
         ]
 
         for term in terminals:
+            term_path = shutil.which(term)
+            if not term_path:
+                print(f"[launcher] '{term}' not found on PATH, skipping.")
+                continue
             try:
                 if term == "gnome-terminal":
-                    proc = subprocess.Popen([term, "--"] + args, close_fds=True)
-                
-                elif term == "xfce4-terminal":
+                    cmd = [term, "--"] + args
+                elif term in ("xfce4-terminal", "qterminal"):
                     safe_command = " ".join(shlex.quote(arg) for arg in args)
-                    proc = subprocess.Popen(
-                        [term, "--command", safe_command],
-                        close_fds=True,
-                    )
-                
-                elif term in ["konsole", "lxterminal", "tilix", "mate-terminal", 
-                              "qterminal", "terminator", "alacritty", "xterm"]:
-                    proc = subprocess.Popen([term, "-e"] + args, close_fds=True)
+                    cmd = [term, "-e", safe_command]
                 else:
-                    continue
+                    cmd = [term, "-e"] + args
+                print(f"[launcher] Trying terminal: {cmd}")
+                proc = subprocess.Popen(cmd, close_fds=True)
+                print(f"[launcher] Launched {term} (pid={proc.pid})")
                 break
-            except (FileNotFoundError, Exception):
+            except Exception as e:
+                print(f"[launcher] Failed to launch {term}: {e}")
                 proc = None
                 continue
 
@@ -242,6 +261,94 @@ def run_server_in_process(target_folder):
     else:
         print("Error: Invalid folder path.")
         input("Press Enter to exit...")
+def launch_server_process(target_folder):
+    system = platform.system()
+
+    if getattr(sys, "frozen", False):
+        executable = sys.executable
+        args = [executable, target_folder]
+    else:
+        executable = sys.executable
+        script_path = os.path.abspath(__file__)
+        args = [executable, script_path, target_folder]
+
+    proc = None
+
+    if system == "Windows":
+        proc = subprocess.Popen(
+            args,
+            close_fds=True,
+            creationflags=subprocess.CREATE_NEW_CONSOLE,
+            env=_clean_subprocess_env(),
+        )
+
+    elif system == "Darwin":
+        safe_args = " ".join(
+            f'"{_escape_applescript_arg(a)}"' for a in args
+        )
+        osascript_cmd = (
+            f'tell application "Terminal" to do script "{safe_args}"'
+        )
+
+        try:
+            subprocess.run(
+                ["osascript", "-e", osascript_cmd],
+                env=_clean_subprocess_env()
+            )
+            return None
+        except Exception as e:
+            print(f"Failed to launch Terminal: {e}")
+            print("Running server in the current process instead.")
+            run_server_in_process(target_folder)
+            return None
+
+    elif system == "Linux":
+        terminals = [
+            "gnome-terminal",
+            "xfce4-terminal",
+            "konsole",
+            "lxterminal",
+            "tilix",
+            "mate-terminal",
+            "qterminal",
+            "terminator",
+            "alacritty",
+            "xterm",
+        ]
+
+        for term in terminals:
+            term_path = shutil.which(term)
+            if not term_path:
+                print(f"[launcher] '{term}' not found on PATH, skipping.")
+                continue
+
+            try:
+                if term == "gnome-terminal":
+                    cmd = [term, "--"] + args
+                elif term in ("xfce4-terminal", "qterminal"):
+                    safe_command = " ".join(
+                        shlex.quote(arg) for arg in args
+                    )
+                    cmd = [term, "-e", safe_command]
+                else:
+                    cmd = [term, "-e"] + args
+
+                print(f"[launcher] Trying terminal: {cmd}")
+                proc = subprocess.Popen(cmd, close_fds=True)
+                print(f"[launcher] Launched {term} (pid={proc.pid})")
+                break
+
+            except Exception as e:
+                print(f"[launcher] Failed to launch {term}: {e}")
+                proc = None
+
+        if proc is None:
+            print("Could not find a suitable terminal emulator.")
+            print("Running server in the current process instead.")
+            run_server_in_process(target_folder)
+            return None
+
+    return proc
     
 def main():
     if len(sys.argv) > 1:
@@ -254,7 +361,25 @@ def main():
     else:
         folder = open_folder_picker()
         if folder:
-            run_server_in_process(folder)
+            proc = launch_server_process(folder)
+            
+            if proc:
+                proc.wait()  # Linux/Windows wait
+            elif platform.system() == "Darwin":
+                # macOS asynchronous wait workaround
+                time.sleep(2) # Give osascript time to launch the new terminal
+                exe_name = os.path.basename(sys.executable)
+                
+                while True:
+                    try:
+                        # Check if the binary is still running with the target_folder argument
+                        output = subprocess.check_output(["ps", "aux"], text=True)
+                        if exe_name in output and folder in output:
+                            time.sleep(2)
+                        else:
+                            break
+                    except Exception:
+                        break
         sys.exit()
 
 if __name__ == "__main__":
