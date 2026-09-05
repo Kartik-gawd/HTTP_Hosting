@@ -24,7 +24,7 @@ Share a folder with devices on the same Wi-Fi or LAN network through a clean web
 * **Standalone Windows EXE** available with no installation required.
 
   
-# Windows Download  📥
+# Executor Download 📥
 
 **No installation required.**
 
