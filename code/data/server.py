@@ -25,6 +25,11 @@ from utils.rate_limit import *
 from utils.sse import sse_broadcast, sse_send_to, _sse_clients, _sse_clients_lock
 from utils.presence import *
 from utils.dir_cache import _cached_listdir, _invalidate_dir_cache
+from utils.admin_config import (
+    EXCLUDED_EXTENSIONS as ADMIN_EXCLUDED_EXTENSIONS,
+    EXCLUDED_PATHS as ADMIN_EXCLUDED_PATHS,
+    normalize_path,
+)
 from utils.media import *
 from utils.sweeper import *
 from utils.network import *
@@ -206,6 +211,23 @@ APP_DIR = _get_bundled_assets_dir()
 
 # First path segment(s) that identify the app's own static assets.
 _APP_STATIC_PREFIXES = ('style.css', 'icon', 'effects')
+
+
+def _is_admin_excluded(fullname: str, name: str) -> bool:
+  
+    if not os.path.isdir(fullname):
+        ext = os.path.splitext(name)[1].lower()
+        if ext in ADMIN_EXCLUDED_EXTENSIONS:
+            return True
+    try:
+        rel = normalize_path(os.path.relpath(fullname, os.getcwd()))
+    except ValueError:
+        return False
+    if not rel:
+        return False
+    if rel in ADMIN_EXCLUDED_PATHS:
+        return True
+    return any(rel == p or rel.startswith(p + "/") for p in ADMIN_EXCLUDED_PATHS)
 
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
@@ -1532,6 +1554,9 @@ class ModernHandler(http.server.SimpleHTTPRequestHandler):
             self.send_error(404, "No permission to list directory")
             return None
 
+        # Apply admin-managed exclusions before anything downstream (rows, subtitles, gallery) sees these names.
+        list_dir = [name for name in list_dir if not _is_admin_excluded(os.path.join(path, name), name)]
+
         sort_by = 'name'
         try:
             sort_param = urllib.parse.parse_qs(
@@ -1602,8 +1627,7 @@ class ModernHandler(http.server.SimpleHTTPRequestHandler):
         file_rows = []
         for item in file_data:
             name, is_dir, ext = item['name'], item['is_dir'], item['ext']
-            if ext in EXCLUDED_EXTENSIONS:
-                continue
+            # Exclusion filtering already happened on list_dir above.
 
             linkname   = name + "/" if is_dir else name
             icon_class = "icon-gray"
@@ -1644,7 +1668,7 @@ class ModernHandler(http.server.SimpleHTTPRequestHandler):
 
             if is_dir:
                 file_rows.append(
-                    f'<a href="{url}" class="item" data-name="{name.lower()}">'
+                    f'<a href="{url}" class="item" data-name="{name.lower()}" data-url="{url}" data-type="dir">'
                     f'<div class="file-icon {icon_class}">{icon_text}</div>'
                     f'<div class="info"><span class="name">{html.escape(name)}</span>'
                     f'<span class="meta grid-meta">{grid_meta}</span>'
@@ -1658,7 +1682,7 @@ class ModernHandler(http.server.SimpleHTTPRequestHandler):
                 sub_url  = f"'{dir_url_prefix + urllib.parse.quote(item['subtitle'])}'" if item.get('subtitle') else 'null'
                 subs_enc = urllib.parse.quote(json.dumps([dir_url_prefix + urllib.parse.quote(s) for s in all_subtitles]))
                 file_rows.append(
-                    f'<div class="item" data-name="{name.lower()}" '
+                    f'<div class="item" data-name="{name.lower()}" data-url="{url}" data-type="file" '
                     f'onclick="showModal(\'{url}\',\'{name}\',{can_prev},{m_attr},{sub_url},\'{subs_enc}\')">'
                     f'<div class="file-icon {icon_class}">{icon_text}</div>'
                     f'<div class="info"><span class="name">{html.escape(name)}</span>'
