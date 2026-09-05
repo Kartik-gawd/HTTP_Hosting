@@ -17,6 +17,22 @@
         --neon-cyan: #00e5ff;
         --neon-red: #ff00aa;
     }
+
+  
+    video::cue {
+        background: transparent;
+        color: #fff;
+        text-shadow:
+            0 0 4px rgba(0, 0, 0, 0.9),
+            0 0 8px rgba(0, 0, 0, 0.9),
+            1px 1px 2px rgba(0, 0, 0, 0.95);
+    }
+    video::-webkit-media-text-track-display {
+        background-color: transparent !important;
+    }
+    video::-webkit-media-text-track-container {
+        background-color: transparent !important;
+    }
     body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         color: var(--text);
@@ -662,6 +678,55 @@
 
         #btn-next { 
             right: 30px; 
+        }
+
+        #btn-fullscreen {
+            top: 20px;
+            right: 20px;
+            left: auto;
+            transform: none;
+            font-size: 18px;
+            padding: 10px 12px;
+        }
+
+        /* True fullscreen mode: let the overlay/image use the whole screen
+           instead of the fixed-width modal card. Buttons remain visible
+           because they're siblings inside the fullscreened element. */
+        #modal-overlay:fullscreen,
+        #modal-overlay:-webkit-full-screen {
+            background: #000;
+        }
+        #modal-overlay:fullscreen .modal,
+        #modal-overlay:-webkit-full-screen .modal {
+            width: 100vw;
+            max-width: 100vw;
+            height: 100vh;
+            max-height: 100vh;
+            border-radius: 0;
+            border: none;
+            box-shadow: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        #modal-overlay:fullscreen .media-player img,
+        #modal-overlay:-webkit-full-screen .media-player img {
+            max-height: 92vh;
+            max-width: 98vw;
+        }
+        #modal-overlay:fullscreen #modal-title,
+        #modal-overlay:fullscreen #modal-description,
+        #modal-overlay:fullscreen #btn-preview,
+        #modal-overlay:fullscreen #btn-download,
+        #modal-overlay:fullscreen #btn-delete,
+        #modal-overlay:fullscreen .btn-cancel,
+        #modal-overlay:-webkit-full-screen #modal-title,
+        #modal-overlay:-webkit-full-screen #modal-description,
+        #modal-overlay:-webkit-full-screen #btn-preview,
+        #modal-overlay:-webkit-full-screen #btn-download,
+        #modal-overlay:-webkit-full-screen #btn-delete,
+        #modal-overlay:-webkit-full-screen .btn-cancel {
+            display: none;
         }
 
         @media (max-width: 768px) { #btn-prev { left: 10px; } #btn-next { right: 10px; } 
@@ -1366,6 +1431,59 @@
         }
     }
 
+/* ── Exclusion modal / admin affordance (homepage) ── */
+.modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1500; opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.modal-backdrop.open { opacity: 1; pointer-events: auto; }
+#modal-exclusions .modal {
+    text-align: left; width: 420px; max-width: 94%;
+    background: #1e1e1e; padding: 22px; border-radius: 14px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    transform: none;
+}
+#modal-exclusions h2 { margin-top: 0; font-size: 1.15rem; color: #fff; }
+.excl-tabs { display: flex; gap: 8px; margin: 12px 0; }
+.excl-tab {
+    padding: 7px 14px; border: 1px solid var(--glass-border);
+    border-radius: 8px; background: transparent; color: #ccc;
+    cursor: pointer; font-size: 13px; font-weight: 600;
+}
+.excl-tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
+.chip-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.chip {
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border);
+    border-radius: 8px; padding: 8px 10px; font-size: 13px; color: #eee;
+}
+.chip-label { word-break: break-word; }
+.chip-remove {
+    background: transparent; border: none; color: #ff5577;
+    font-size: 16px; line-height: 1; cursor: pointer; margin-left: 8px;
+}
+.chip-remove:hover { color: #ff2255; }
+.empty-state { color: #888; font-size: 13px; padding: 12px 0; text-align: center; }
+.excl-field { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
+.excl-field input {
+    flex: 1; min-width: 0; background: rgba(255,255,255,0.08);
+    border: 1px solid var(--glass-border); border-radius: 8px;
+    padding: 8px 10px; color: #eee; font-size: 13px;
+}
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+.btn-sm {
+    display: inline-block; width: auto; padding: 8px 14px; font-size: 13px;
+    border: 1px solid var(--glass-border); border-radius: 8px;
+    cursor: pointer; background: rgba(255,255,255,0.08); color: #fff;
+    text-align: center; font-weight: 600; box-sizing: border-box;
+}
+.btn-amber { background: #ff9800; color: #000; border-color: #ff9800; }
+.btn-amber:hover { background: #ffb74d; }
+
 </style>
 </head>
 <body>
@@ -1489,6 +1607,10 @@
     </div>
 </div>
 
+<div id="exclusion-bar" style="display:none; margin-bottom:16px;">
+    <button class="btn btn-sm btn-amber" onclick="openExclusionsModal()" title="Manage excluded files and extensions">🚫 Exclusion</button>
+</div>
+
 <!-- ── Upload form (hidden by default)  -->
 <div id="upload-form" class="upload-form" style="display:none;">
     <h3>Upload Files</h3>
@@ -1522,16 +1644,46 @@
     {FILE_ROWS}
 </div>  
 
-<!-- ── Folder context menu  -->
+<!-- ── File/folder context menu  -->
 <div id="folder-ctx-menu">
     <div id="ctx-rename" class="ctx-item" onclick="ctxRename()">&#9998; Rename</div>
     <div id="ctx-delete" class="ctx-item ctx-item-danger" onclick="ctxDelete()">&#128465; Delete</div>
+    <div id="ctx-exclude" class="ctx-item" onclick="ctxExclude()">&#128683; Add to Exclusion</div>
+</div>
+
+<!-- ── Exclusions modal (homepage) ── -->
+<div class="modal-backdrop" id="modal-exclusions">
+  <div class="modal">
+    <h2>◈ Exclusions</h2>
+    <div class="excl-tabs">
+      <button class="excl-tab active" id="excl-tab-files" onclick="switchExclusionTab('files')">Files</button>
+      <button class="excl-tab" id="excl-tab-ext" onclick="switchExclusionTab('extensions')">Extensions</button>
+    </div>
+    <div id="excl-panel-files">
+      <ul class="chip-list" id="excl-files-list" style="max-height:280px; overflow-y:auto; padding:0;">
+        <li class="empty-state">Loading…</li>
+      </ul>
+    </div>
+    <div id="excl-panel-extensions" style="display:none;">
+      <div class="excl-field">
+        <input type="text" id="excl-ext-input" placeholder=".mp4, .css, etc." autocomplete="off">
+        <button class="btn-sm btn-amber" onclick="addExclusionExtension()">Add</button>
+      </div>
+      <ul class="chip-list" id="excl-ext-list" style="max-height:230px; overflow-y:auto; padding:0;">
+        <li class="empty-state">Loading…</li>
+      </ul>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-sm" onclick="closeExclusionsModal()">Close</button>
+    </div>
+  </div>
 </div>
 
 <!-- ── Modal overlay s -->
 <div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)">
     <button id="btn-prev" class="gallery-btn hidden" onclick="prevImage(event)">&#10094;</button>
     <button id="btn-next" class="gallery-btn hidden" onclick="nextImage(event)">&#10095;</button>
+    <button id="btn-fullscreen" class="gallery-btn hidden" title="Fullscreen (F)" onclick="toggleImageFullscreen(event)">&#9974;</button>
     <div class="modal">
         <h3 id="modal-title">File Name</h3>
         <div id="media-player" class="media-player hidden" style="flex-direction: column; width: 100%;"></div>
@@ -1594,6 +1746,25 @@
         if (currentGalleryIndex > 0) { currentGalleryIndex--; updateGalleryView(); }
     }
 
+    // ── Image fullscreen (gallery mode) 
+    // Fullscreens the overlay itself (not just the <img>) so the prev/next
+    // and fullscreen-toggle buttons — its siblings — stay visible on top.
+    function toggleImageFullscreen(e) {
+        if (e) e.stopPropagation();
+        const overlay = document.getElementById('modal-overlay');
+        if (!document.fullscreenElement) {
+            (overlay.requestFullscreen || overlay.webkitRequestFullscreen || function(){}).call(overlay).catch(() => {});
+        } else {
+            document.exitFullscreen().catch(() => {});
+        }
+    }
+
+    document.addEventListener('fullscreenchange', function() {
+        const btn = document.getElementById('btn-fullscreen');
+        if (!btn) return;
+        btn.innerHTML = document.fullscreenElement ? '&#10005;' : '&#9974;';
+    });
+
     document.addEventListener('keydown', function(e) {
         const overlay = document.getElementById('modal-overlay');
         if (overlay.style.display === 'flex') {
@@ -1601,6 +1772,7 @@
             if (e.key === 'ArrowRight' && currentGalleryIndex !== -1) nextImage();
             if (e.key === 'ArrowLeft'  && currentGalleryIndex !== -1) prevImage();
             if (e.key === 'Escape') closeModal(null);
+            if ((e.key === 'f' || e.key === 'F') && currentGalleryIndex !== -1) toggleImageFullscreen();
 
             // PC & TV Video Controls
             const video = document.getElementById('cv-video');
@@ -1814,6 +1986,12 @@
             if (data.your_ip)    window._myIp      = data.your_ip;
             if (data.server_ips) window._serverIps  = data.server_ips;
             renderOnlineRadar(data.online_ips, data.online_count, data.aliases || {});
+        });
+
+        // Exclusions changed (e.g. context-menu add) — keep modal in sync if open
+        sse.addEventListener('exclusion_change', (e) => {
+            const modal = document.getElementById('modal-exclusions');
+            if (modal && modal.classList.contains('open')) refreshExclusions();
         });
 
         // Peer registry changed — refresh sidebar list if open
@@ -2328,35 +2506,172 @@
     if (isAdmin) {
         const _adminLink = document.getElementById('admin-console-link');
         if (_adminLink) _adminLink.style.display = 'inline-flex';
+        const _exclBar = document.getElementById('exclusion-bar');
+        if (_exclBar) _exclBar.style.display = 'block';
     }
     
     const _userPerms = (typeof {USER_PERMISSIONS} !== 'undefined') ? {USER_PERMISSIONS} : {"can_delete": false, "can_rename": false};
 
-    // ── Folder context menu logic 
-    let _ctxTarget = null;   // { name, url, element }
+    function getCookie(name) {
+        const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return m ? decodeURIComponent(m[1]) : '';
+    }
 
-    function _showCtxMenu(x, y, folderName, folderUrl, element) {
-        _ctxTarget = { name: folderName, url: folderUrl, element };
+    // ── Exclusion management (homepage) ──
+    function escHtml(s) {
+        return String(s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function escJs(s) {
+        return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    }
+    async function adminExclFetch(path, options = {}) {
+        const merged = {
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Admin-CSRF': getCookie('admin_csrf'),
+                ...(options.headers || {}),
+            },
+        };
+        try {
+            const res = await fetch(path, merged);
+            if (res.status === 401) {
+                return null;
+            }
+            return res.json();
+        } catch (e) {
+            showToast('Request failed: network error', 'error');
+            return null;
+        }
+    }
+    function openExclusionsModal() {
+        const el = document.getElementById('modal-exclusions');
+        if (!el) return;
+        el.classList.add('open');
+        switchExclusionTab('files');
+        refreshExclusions();
+    }
+    function closeExclusionsModal() {
+        const el = document.getElementById('modal-exclusions');
+        if (el) el.classList.remove('open');
+    }
+    function switchExclusionTab(tab) {
+        const isFiles = tab === 'files';
+        document.getElementById('excl-tab-files').classList.toggle('active', isFiles);
+        document.getElementById('excl-tab-ext').classList.toggle('active', !isFiles);
+        document.getElementById('excl-panel-files').style.display      = isFiles ? 'block' : 'none';
+        document.getElementById('excl-panel-extensions').style.display = isFiles ? 'none' : 'block';
+    }
+    async function refreshExclusions() {
+        const data = await adminExclFetch('/admin/exclusions');
+        if (!data) return;
+        renderExclusionFiles(data.excluded_paths || []);
+        renderExclusionExtensions(data.excluded_extensions || []);
+    }
+    function renderExclusionFiles(paths) {
+        const list = document.getElementById('excl-files-list');
+        if (!list) return;
+        if (!paths.length) {
+            list.innerHTML = '<li class="empty-state">No excluded files or folders.</li>';
+            return;
+        }
+        list.innerHTML = paths.map(p => `
+            <li class="chip">
+                <span class="chip-label" title="${escHtml(p)}">${escHtml(p)}</span>
+                <button class="chip-remove" title="Remove exclusion" onclick="removeExclusionPath('${escJs(p)}')">&times;</button>
+            </li>`).join('');
+    }
+    function renderExclusionExtensions(exts) {
+        const list = document.getElementById('excl-ext-list');
+        if (!list) return;
+        if (!exts.length) {
+            list.innerHTML = '<li class="empty-state">No excluded extensions.</li>';
+            return;
+        }
+        list.innerHTML = exts.map(e => `
+            <li class="chip">
+                <span class="chip-label">${escHtml(e)}</span>
+                <button class="chip-remove" title="Remove exclusion" onclick="removeExclusionExtension('${escJs(e)}')">&times;</button>
+            </li>`).join('');
+    }
+    async function removeExclusionPath(path) {
+        const data = await adminExclFetch('/admin/exclusions/path/remove', {
+            method: 'POST',
+            body: JSON.stringify({ path }),
+        });
+        if (data && data.ok !== false) {
+            showToast(`"${path}" is no longer excluded.`, 'success', 2000);
+            refreshExclusions();
+        } else if (data) {
+            showToast('Remove failed: ' + (data.error || 'unknown error'), 'error');
+        }
+    }
+    async function addExclusionExtension() {
+        const input = document.getElementById('excl-ext-input');
+        const value = (input.value || '').trim();
+        if (!value) return;
+        const data = await adminExclFetch('/admin/exclusions/extension/add', {
+            method: 'POST',
+            body: JSON.stringify({ extension: value }),
+        });
+        if (data && data.ok !== false) {
+            input.value = '';
+            showToast(`"${value}" excluded.`, 'success', 2000);
+            refreshExclusions();
+        } else if (data) {
+            showToast('Add failed: ' + (data.error || 'unknown error'), 'error');
+        }
+    }
+    async function removeExclusionExtension(ext) {
+        const data = await adminExclFetch('/admin/exclusions/extension/remove', {
+            method: 'POST',
+            body: JSON.stringify({ extension: ext }),
+        });
+        if (data && data.ok !== false) {
+            showToast(`"${ext}" is no longer excluded.`, 'success', 2000);
+            refreshExclusions();
+        } else if (data) {
+            showToast('Remove failed: ' + (data.error || 'default extensions from config.py cannot be removed'), 'error');
+        }
+    }
+    (function attachExclusionHandlers() {
+        const modal = document.getElementById('modal-exclusions');
+        if (modal) modal.addEventListener('click', e => { if (e.target === modal) closeExclusionsModal(); });
+        const input = document.getElementById('excl-ext-input');
+        if (input) input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addExclusionExtension(); } });
+    })();
+
+    // ── File/folder context menu logic 
+    let _ctxTarget = null;   // { name, url, element, type: 'dir'|'file' }
+
+    function _showCtxMenu(x, y, itemName, itemUrl, element, itemType) {
+        _ctxTarget = { name: itemName, url: itemUrl, element, type: itemType || 'dir' };
 
         const menu      = document.getElementById('folder-ctx-menu');
         const renameEl  = document.getElementById('ctx-rename');
         const deleteEl  = document.getElementById('ctx-delete');
+        const excludeEl = document.getElementById('ctx-exclude');
 
-        // Show/hide items according to this client's permissions.
-        renameEl.style.display = _userPerms.can_rename ? 'block' : 'none';
-        deleteEl.style.display = _userPerms.can_delete ? 'block' : 'none';
+        // Rename/Delete follow this client's permissions; Exclusion is admin-only,
+        // available for both files and folders.
+        renameEl.style.display  = _userPerms.can_rename ? 'block' : 'none';
+        deleteEl.style.display  = _userPerms.can_delete ? 'block' : 'none';
+        if (excludeEl) excludeEl.style.display = isAdmin ? 'block' : 'none';
 
-        // If neither action is permitted, nothing to show.
-        if (!_userPerms.can_rename && !_userPerms.can_delete) return;
+        // If nothing is permitted, nothing to show.
+        if (!_userPerms.can_rename && !_userPerms.can_delete && !isAdmin) return;
 
         menu.style.display = 'block';
 
         // Keep the menu inside the viewport.
         const vw = window.innerWidth, vh = window.innerHeight;
-        const mw = 180, mh = 90;
+        const mw = 180, mh = 124;
         menu.style.left = (x + mw > vw ? vw - mw - 8 : x) + 'px';
         menu.style.top  = (y + mh > vh ? vh - mh - 8 : y) + 'px';
     }
+
 
     function _hideCtxMenu() {
         document.getElementById('folder-ctx-menu').style.display = 'none';
@@ -2416,17 +2731,21 @@
     async function ctxDelete() {
         if (!_ctxTarget) return;
         
-        const { name, url, element } = _ctxTarget;
+        const { name, url, element, type } = _ctxTarget;
         _hideCtxMenu();
-        if (!confirm(`Permanently delete folder "${name}" and ALL its contents?\nThis cannot be undone.`)) return;
+        const noun = type === 'file' ? 'file' : 'folder';
+        const warning = type === 'file'
+            ? `Permanently delete file "${name}"?\nThis cannot be undone.`
+            : `Permanently delete folder "${name}" and ALL its contents?\nThis cannot be undone.`;
+        if (!confirm(warning)) return;
         try {
-            // url is the folder's own pathname — POST directly to it.
+            // url is the item's own pathname — POST directly to it.
             const res = await fetch(url + '?action=delete', { method: 'POST' });
             if (res.ok) {
                 showToast(`"${name}" deleted.`, 'success', 2000);
                 if (element) element.remove();
             } else if (res.status === 403) {
-                showToast('Only the server host can delete folders.', 'error', 4000);
+                showToast(`Only the server host can delete ${noun}s.`, 'error', 4000);
             } else {
                 const msg = await res.text().catch(() => res.statusText);
                 showToast('Delete failed: ' + msg, 'error');
@@ -2436,43 +2755,88 @@
         }
     }
 
-    // ── Attach context menu listeners to all folder items 
-    (function attachFolderCtxListeners() {
+    async function ctxExclude() {
+        if (!_ctxTarget) return;
+
+        const { name, url } = _ctxTarget;
+        _hideCtxMenu();
+        if (!isAdmin) return;
+
+        // Convert the item's web pathname (URL-encoded, may end with '/' for
+        // folders) into the relative filesystem path the exclusion API expects.
+        let relPath;
+        try {
+            relPath = decodeURIComponent(new URL(url, window.location.origin).pathname);
+        } catch (e) {
+            relPath = decodeURIComponent(url);
+        }
+        relPath = relPath.replace(/^\/+/, '').replace(/\/+$/, '');
+        if (!relPath) return;
+
+        if (!confirm(`Exclude "${name}" from the file listing?`)) return;
+
+        try {
+            const res = await fetch('/admin/exclusions/path/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Admin-CSRF': getCookie('admin_csrf'),
+                },
+                body: JSON.stringify({ path: relPath }),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data.ok !== false) {
+                showToast(`"${name}" added to exclusions.`, 'success', 2500);
+            } else if (res.status === 409) {
+                showToast(`"${name}" is already excluded.`, 'error', 3000);
+            } else if (res.status === 401) {
+                // Admin session required — no toast.
+            } else {
+                showToast('Exclude failed: ' + (data.error || res.statusText), 'error');
+            }
+        } catch (e) {
+            showToast('Exclude failed: network error', 'error');
+        }
+    }
+
+    // ── Attach context menu listeners to all file & folder items 
+    (function attachItemCtxListeners() {
         const container = document.getElementById('file-container');
         if (!container) return;
 
         let _longPressTimer = null;
 
-        function _folderInfoFromItem(item) {
+        function _itemInfoFromEl(item) {
             // .name span holds the exact filesystem name as rendered by the server.
-            var _nameEl = item.querySelector('.name');
-            var realName = (_nameEl && _nameEl.textContent) ? _nameEl.textContent.trim()
-                          : decodeURIComponent(new URL(item.href).pathname.split('/').filter(Boolean).pop() || '');
-            // Use the pathname only (no host/port) so fetch() targets the right route.
-            const folderPath = new URL(item.href).pathname;
-            return { realName, folderPath };
+            const nameEl   = item.querySelector('.name');
+            const itemType = item.getAttribute('data-type') || (item.tagName === 'A' ? 'dir' : 'file');
+            // data-url is set by the server for both files and folders; fall back
+            // to href (folders) for any cached/older markup that lacks it.
+            const rawUrl = item.getAttribute('data-url') || item.getAttribute('href') || '';
+            const itemPath = rawUrl ? new URL(rawUrl, window.location.origin).pathname : '';
+            const realName = (nameEl && nameEl.textContent)
+                ? nameEl.textContent.trim()
+                : decodeURIComponent(itemPath.split('/').filter(Boolean).pop() || '');
+            return { realName, itemPath, itemType };
         }
 
         container.addEventListener('contextmenu', function (e) {
-            const item = e.target.closest('a.item[href]');
+            const item = e.target.closest('.item[data-name]');
             if (!item) return;
-            // Folders: their href pathname ends with /
-            const pathname = new URL(item.href).pathname;
-            if (!pathname.endsWith('/') || pathname === '/') return;
             e.preventDefault();
-            const { realName, folderPath } = _folderInfoFromItem(item);
-            _showCtxMenu(e.clientX, e.clientY, realName, folderPath, item);
+            const { realName, itemPath, itemType } = _itemInfoFromEl(item);
+            if (!itemPath) return;
+            _showCtxMenu(e.clientX, e.clientY, realName, itemPath, item, itemType);
         });
 
         container.addEventListener('touchstart', function (e) {
-            const item = e.target.closest('a.item[href]');
+            const item = e.target.closest('.item[data-name]');
             if (!item) return;
-            const pathname = new URL(item.href).pathname;
-            if (!pathname.endsWith('/') || pathname === '/') return;
             _longPressTimer = setTimeout(function () {
                 const t = e.touches[0];
-                const { realName, folderPath } = _folderInfoFromItem(item);
-                _showCtxMenu(t.clientX, t.clientY, realName, folderPath, item);
+                const { realName, itemPath, itemType } = _itemInfoFromEl(item);
+                if (!itemPath) return;
+                _showCtxMenu(t.clientX, t.clientY, realName, itemPath, item, itemType);
             }, 600);
         }, { passive: true });
 
@@ -2524,6 +2888,8 @@
         currentGalleryIndex = -1;
         document.getElementById('btn-prev').classList.add('hidden');
         document.getElementById('btn-next').classList.add('hidden');
+        document.getElementById('btn-fullscreen').classList.add('hidden');
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
 
         title.innerText = filename;
         btnDownload.href = url + '?action=download';
@@ -2576,9 +2942,7 @@
                     //  Legacy Mode: simple native <video> player (ES5-style) 
                     var legacyVideoHtml = '<video id="cv-video" controls autoplay style="width:100%;max-height:70vh;display:block;background:#000;">';
                     legacyVideoHtml += '<source src="' + baseUrl + '">';
-                    if (subtitleUrl) {
-                        legacyVideoHtml += '<track id="dynamic-sub-track" kind="subtitles" src="' + subtitleUrl + '" default>';
-                    }
+                    if (subtitleUrl) legacyVideoHtml += '<track id="dynamic-sub-track" kind="subtitles" src="' + subtitleUrl + '">';
                     legacyVideoHtml += 'Your browser does not support the video tag.</video>';
                     mediaPlayer.innerHTML = legacyVideoHtml;
 
@@ -2680,6 +3044,7 @@
                 currentGalleryIndex = galleryImages.findIndex(img => img.name === filename);
                 document.getElementById('btn-prev').classList.remove('hidden');
                 document.getElementById('btn-next').classList.remove('hidden');
+                document.getElementById('btn-fullscreen').classList.remove('hidden');
                 updateGalleryView();
             }
         }
@@ -2695,6 +3060,7 @@
                 cancelExtraction(window._currentVideoKey);
                 window._currentVideoKey = null;
             }
+            if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
             const overlay = document.getElementById('modal-overlay');
             overlay.querySelector('.modal').classList.remove('active');
             setTimeout(() => overlay.style.display = 'none', 200);
