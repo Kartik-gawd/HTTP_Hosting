@@ -41,6 +41,7 @@ def init(server_globals: dict) -> None:
     load_admin_config(
         base_file=_g.get("__file__", "server.py"),
         admin_password=_g.get("ADMIN_PASSWORD", "change_me"),
+        base_excluded_extensions=_g.get("EXCLUDED_EXTENSIONS", set()),
     )
    
     set_password_hash(_g.get("ADMIN_PASSWORD", "change_me"))
@@ -543,6 +544,94 @@ def handle_admin_upload_cooldown(handler, body: dict) -> None:
           f"{datetime.datetime.fromtimestamp(expiry).strftime('%H:%M:%S')} "
           f"(upload: {target_path})")
 
+# Section C: Exclusion Management
+
+def handle_admin_exclusions_get(handler) -> None:
+    send_admin_ok(handler, {
+        "excluded_paths": sorted(EXCLUDED_PATHS),
+        "excluded_extensions": sorted(EXCLUDED_EXTENSIONS),
+    })
+
+
+def _broadcast_exclusion_change(action: str, kind: str, value: str) -> None:
+    """Notify any open admin dashboards so their exclusion window stays live,
+    e.g. when a file/folder is excluded from the file-browser context menu
+    while the exclusions modal is open in another tab."""
+    _sse_broadcast = _g.get("sse_broadcast")
+    if _sse_broadcast:
+        _sse_broadcast("exclusion_change", {
+            "action": action,        # "added" | "removed"
+            "kind": kind,            # "path" | "extension"
+            "value": value,
+            "excluded_paths": sorted(EXCLUDED_PATHS),
+            "excluded_extensions": sorted(EXCLUDED_EXTENSIONS),
+        })
+
+
+def handle_admin_exclusion_path_add(handler, body: dict) -> None:
+    norm = normalize_path(body.get("path", ""))
+    if not norm:
+        send_admin_error(handler, 400, "Field 'path' is required.")
+        return
+    if norm in EXCLUDED_PATHS:
+        # Already excluded — safe/idempotent result, no duplicate created.
+        send_admin_error(handler, 409, f"Path {norm!r} is already excluded.")
+        return
+    add_excluded_path(norm)
+    write_admin_config()
+    _broadcast_exclusion_change("added", "path", norm)
+    send_admin_ok(handler, {"added": norm, "excluded_paths": sorted(EXCLUDED_PATHS)})
+    print(f"[Admin] Excluded path added: {norm}")
+
+
+def handle_admin_exclusion_path_remove(handler, body: dict) -> None:
+    norm = normalize_path(body.get("path", ""))
+    if not norm:
+        send_admin_error(handler, 400, "Field 'path' is required.")
+        return
+    if norm not in EXCLUDED_PATHS:
+        send_admin_error(handler, 404, f"Path {norm!r} is not excluded.")
+        return
+    remove_excluded_path(norm)
+    write_admin_config()
+    _broadcast_exclusion_change("removed", "path", norm)
+    send_admin_ok(handler, {"removed": norm, "excluded_paths": sorted(EXCLUDED_PATHS)})
+    print(f"[Admin] Excluded path removed: {norm}")
+
+
+def handle_admin_exclusion_extension_add(handler, body: dict) -> None:
+    norm = normalize_extension(body.get("extension", ""))
+    if not norm:
+        send_admin_error(handler, 400, "Field 'extension' is required.")
+        return
+    if norm in EXCLUDED_EXTENSIONS:
+        send_admin_error(handler, 409, f"Extension {norm!r} is already excluded.")
+        return
+    add_excluded_extension(norm)
+    write_admin_config()
+    _broadcast_exclusion_change("added", "extension", norm)
+    send_admin_ok(handler, {"added": norm, "excluded_extensions": sorted(EXCLUDED_EXTENSIONS)})
+    print(f"[Admin] Excluded extension added: {norm}")
+
+
+def handle_admin_exclusion_extension_remove(handler, body: dict) -> None:
+    norm = normalize_extension(body.get("extension", ""))
+    if not norm:
+        send_admin_error(handler, 400, "Field 'extension' is required.")
+        return
+    if norm not in EXCLUDED_EXTENSIONS:
+        send_admin_error(handler, 404, f"Extension {norm!r} is not excluded.")
+        return
+    if is_default_extension(norm):
+        send_admin_error(handler, 400, f"Extension {norm!r} is a config-defined default and cannot be removed.")
+        return
+    remove_excluded_extension(norm)
+    write_admin_config()
+    _broadcast_exclusion_change("removed", "extension", norm)
+    send_admin_ok(handler, {"removed": norm, "excluded_extensions": sorted(EXCLUDED_EXTENSIONS)})
+    print(f"[Admin] Excluded extension removed: {norm}")
+
+
 def handle_admin_get_config(handler) -> None:
     send_admin_ok(handler, {
         "networks": [str(n) for n in ALLOWED_NETWORKS],
@@ -551,6 +640,8 @@ def handle_admin_get_config(handler) -> None:
         "strict_mode": get_strict_mode(),
         # Kill switch is active when the allowlist is empty (lockdown).
         "lockdown": len(ALLOWED_NETWORKS) == 0,
+        "excluded_paths": sorted(EXCLUDED_PATHS),
+        "excluded_extensions": sorted(EXCLUDED_EXTENSIONS),
     })
 
 
@@ -696,6 +787,7 @@ def handle_admin_request(handler, parsed_url, query_params) -> None:
         if path == "/admin/ratelimit":     handle_admin_ratelimit_status(handler); return
         if path == "/admin/upload/locks":  handle_admin_upload_locks(handler);   return
         if path == "/admin/config":        handle_admin_get_config(handler);     return
+        if path == "/admin/exclusions":    handle_admin_exclusions_get(handler); return
         if path == "/admin/strict/queue":  handle_strict_queue_get(handler);     return
         if path == "/admin/strict/status":
             send_admin_ok(handler, {"strict_mode": get_strict_mode()});          return
@@ -719,6 +811,10 @@ def handle_admin_request(handler, parsed_url, query_params) -> None:
 
         if path == "/admin/network/add":          handle_admin_network_add(handler, body);          return
         if path == "/admin/network/remove":       handle_admin_network_remove(handler, body);       return
+        if path == "/admin/exclusions/path/add":       handle_admin_exclusion_path_add(handler, body);       return
+        if path == "/admin/exclusions/path/remove":    handle_admin_exclusion_path_remove(handler, body);    return
+        if path == "/admin/exclusions/extension/add":     handle_admin_exclusion_extension_add(handler, body);     return
+        if path == "/admin/exclusions/extension/remove":  handle_admin_exclusion_extension_remove(handler, body);  return
         if path == "/admin/killswitch":           handle_admin_killswitch(handler, body);           return
         if path == "/admin/killswitch/off":       handle_admin_killswitch_off(handler, body);       return
         if path == "/admin/ban":                  handle_admin_ban(handler, body);                  return
