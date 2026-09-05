@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "last_modified": "2026-08-18T08:49:42.006013Z",
+  "last_modified": "2026-09-05T15:19:36.151152Z",
   "allowed_networks": [
     "192.168.0.0/16",
     "10.0.0.0/8",
@@ -9,5 +9,7 @@
   "banned_ips": [],
   "notes": {},
   "strict_mode": false,
-  "previous_networks": []
+  "previous_networks": [],
+  "excluded_paths": [],
+  "excluded_extensions": []
 }
