@@ -16,6 +16,14 @@ admin_notes: dict     = {}
 # subnets can be restored later. Persisted in admin_config.json.
 previous_networks: list = []
 
+# Admin-managed exclusion system: explicit paths + extra extensions on top of
+# config.py's static EXCLUDED_EXTENSIONS. EXCLUDED_EXTENSIONS below is always
+# the EFFECTIVE (base ∪ admin-added) set; only the admin-added portion is
+# persisted, so changes to config.py's base set are picked up automatically.
+EXCLUDED_PATHS: set      = set()
+EXCLUDED_EXTENSIONS: set = set()
+_BASE_EXCLUDED_EXTENSIONS: set = set()
+
 # Remember where the config file lives so write_admin_config() can be called
 # without an argument from the admin handlers.
 _CONFIG_PATH: str = ""
@@ -23,14 +31,35 @@ _CONFIG_PATH: str = ""
 def _config_path(base_file: str) -> str:
     return os.path.join(os.path.dirname(os.path.abspath(base_file)), "admin_config.json")
 
-def load_admin_config(base_file: str, admin_password: str) -> bytes:
+def normalize_extension(ext: str) -> str:
+    """Lowercase, dot-prefixed, whitespace-stripped extension. Returns '' if empty."""
+    ext = (ext or "").strip().lower()
+    if not ext:
+        return ""
+    if not ext.startswith("."):
+        ext = "." + ext
+    return ext
+
+def normalize_path(path: str) -> str:
+    """Normalize a user-supplied exclusion path so equivalent forms collapse
+    to one representation (slashes, case of separators, trailing/leading slashes)."""
+    path = (path or "").strip().replace("\\", "/").strip("/")
+    if not path:
+        return ""
+    return os.path.normpath(path).replace("\\", "/")
+
+def load_admin_config(base_file: str, admin_password: str, base_excluded_extensions=None) -> bytes:
     """
-    Populates ALLOWED_NETWORKS, BANNED_IPS, admin_notes.
+    Populates ALLOWED_NETWORKS, BANNED_IPS, admin_notes, EXCLUDED_PATHS,
+    EXCLUDED_EXTENSIONS (effective = base_excluded_extensions ∪ admin-added).
     Returns the SHA-256 hash of admin_password for the caller to store.
     """
     global ALLOWED_NETWORKS, BANNED_IPS, admin_notes, previous_networks, _CONFIG_PATH
+    global EXCLUDED_PATHS, EXCLUDED_EXTENSIONS, _BASE_EXCLUDED_EXTENSIONS
     import hashlib
     password_hash = hashlib.sha256(admin_password.encode()).digest()
+
+    _BASE_EXCLUDED_EXTENSIONS = {normalize_extension(e) for e in (base_excluded_extensions or set()) if normalize_extension(e)}
 
     _CONFIG_PATH = _config_path(base_file)
     cfg_path = _CONFIG_PATH
@@ -45,6 +74,9 @@ def load_admin_config(base_file: str, admin_password: str) -> bytes:
         ])
         BANNED_IPS.clear()
         admin_notes.clear()
+        EXCLUDED_PATHS.clear()
+        EXCLUDED_EXTENSIONS.clear()
+        EXCLUDED_EXTENSIONS.update(_BASE_EXCLUDED_EXTENSIONS)
         write_admin_config(base_file)
         return password_hash
 
@@ -67,15 +99,67 @@ def load_admin_config(base_file: str, admin_password: str) -> bytes:
                 previous_networks.append(ipaddress.ip_network(net_str, strict=False))
             except ValueError:
                 print(f"[Admin] Warning: invalid previous network in config: {net_str!r}")
+        # Backward compatible: keys are absent in configs written before this feature.
+        EXCLUDED_PATHS.clear()
+        EXCLUDED_PATHS.update(p for p in (normalize_path(x) for x in cfg.get("excluded_paths", [])) if p)
+        admin_added_ext = {e for e in (normalize_extension(x) for x in cfg.get("excluded_extensions", [])) if e}
+        EXCLUDED_EXTENSIONS.clear()
+        EXCLUDED_EXTENSIONS.update(_BASE_EXCLUDED_EXTENSIONS | admin_added_ext)
         # Restore the persisted strict-mode state.
         set_strict_mode(bool(cfg.get("strict_mode", False)))
         print(f"[Admin] Config loaded: {len(ALLOWED_NETWORKS)} networks, "
               f"{len(BANNED_IPS)} banned IPs, "
+              f"{len(EXCLUDED_PATHS)} excluded paths, "
+              f"{len(EXCLUDED_EXTENSIONS)} excluded extensions, "
               f"strict_mode={get_strict_mode()}.")
     except Exception as e:
         print(f"[Admin] Config load error: {e} — using defaults.")
+        EXCLUDED_EXTENSIONS.clear()
+        EXCLUDED_EXTENSIONS.update(_BASE_EXCLUDED_EXTENSIONS)
 
     return password_hash
+
+def _invalidate_listing_cache() -> None:
+    """Clear cached directory listings so exclusion changes take effect
+    immediately, without a server restart. Imported lazily to avoid a
+    circular import (dir_cache does not depend on admin_config)."""
+    try:
+        from utils.dir_cache import _invalidate_dir_cache
+        _invalidate_dir_cache()
+    except Exception as e:
+        print(f"[Admin] Warning: could not invalidate dir cache: {e}")
+
+def add_excluded_path(path: str) -> str:
+    norm = normalize_path(path)
+    if norm:
+        EXCLUDED_PATHS.add(norm)
+        _invalidate_listing_cache()
+    return norm
+
+def remove_excluded_path(path: str) -> str:
+    norm = normalize_path(path)
+    EXCLUDED_PATHS.discard(norm)
+    _invalidate_listing_cache()
+    return norm
+
+def add_excluded_extension(ext: str) -> str:
+    norm = normalize_extension(ext)
+    if norm:
+        EXCLUDED_EXTENSIONS.add(norm)
+        _invalidate_listing_cache()
+    return norm
+
+def remove_excluded_extension(ext: str) -> str:
+    """Only allows removing admin-added extensions; base config.py extensions persist."""
+    norm = normalize_extension(ext)
+    if norm and norm not in _BASE_EXCLUDED_EXTENSIONS:
+        EXCLUDED_EXTENSIONS.discard(norm)
+        _invalidate_listing_cache()
+    return norm
+
+def is_default_extension(ext: str) -> bool:
+    """True if ext is one of config.py's static extensions (not admin-removable)."""
+    return normalize_extension(ext) in _BASE_EXCLUDED_EXTENSIONS
 
 def write_admin_config(base_file: str = "") -> None:
     with admin_config_lock:
@@ -87,6 +171,9 @@ def write_admin_config(base_file: str = "") -> None:
             "notes": admin_notes,
             "strict_mode": get_strict_mode(),
             "previous_networks": [str(n) for n in previous_networks],
+            "excluded_paths": sorted(EXCLUDED_PATHS),
+            # Only persist admin-added extensions; base set comes from config.py.
+            "excluded_extensions": sorted(EXCLUDED_EXTENSIONS - _BASE_EXCLUDED_EXTENSIONS),
         }
         # If no base_file was supplied, fall back to the path recorded by
         # load_admin_config(). This lets admin handlers call
